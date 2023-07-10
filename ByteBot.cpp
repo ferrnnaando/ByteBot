@@ -3,7 +3,6 @@
 using namespace dpp; //testing
 using namespace std;
 
-const std::string BOT_TOKEN = "MTEyNjY5MTc3MTUwNjc1NzcxMw.Gja_M3.Lp8jiHG9feS7qswW9IPtEdUttoVivBUzjQcWzQ";
 const uint64_t ec_default = colors::pink;
 const uint64_t ec_error = colors::red_blood; //embed color
 const string blacklisted_users[3] = { "1", "2", "3" };
