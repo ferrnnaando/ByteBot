@@ -228,10 +228,9 @@ int main() {
 
 						}
 
-			
-
 						const embed embed_userinfo = embed()
 							.set_color(ec_default)
+							.set_author(user.username, "https://discord.gg/bYDhwFFVk5 ", user.get_avatar_url())
 							.set_thumbnail(user.get_avatar_url())
 							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, true)
 							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, true)
@@ -246,10 +245,8 @@ int main() {
 							//.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el...", marca, true)
 							.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || developed by dev.ferrnnaando || " + utility::current_date_time()));
 
-						std::cout << "[" + utility::current_date_time() + "] - " << event.command.usr.username << " || Mensaje /userinfo ejecutado.";
-						event.reply(message(interaction.get_channel().id, embed_userinfo));
-						 
-					
+						std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado. - https://discord.gg/bYDhwFFVk5" << std::endl;
+						event.reply(message(interaction.get_channel().id, embed_userinfo));			 					
 				
 			}
 		}
