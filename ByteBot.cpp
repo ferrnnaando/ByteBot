@@ -75,17 +75,21 @@ int main() {
 						const auto isHouseBravery = user.is_house_bravery();
 						const auto isHouseBalance = user.is_house_balance();
 
-
 						const auto isCertifiedModerator = user.is_certified_moderator();
 						const auto isDiscordEmployee = user.is_discord_employee();
 						const auto isBugHunterLv1 = user.is_bughunter_1();
 						const auto isBugHunterLv2 = user.is_bughunter_2();
 						const auto createTime = user.get_creation_time();
 
-						const auto isBot = user.is_bot();
+						const auto isearlybotdev2 = user.is_verified_bot_dev();
+						const auto isVerifiedAcc = user.is_verified();
+						const auto isVerifiedBot = user.is_verified_bot();
+						const auto isPartnered = user.is_partnered_owner();
 						const auto mfaEnabled = user.is_mfa_enabled();
+						const auto isBot = user.is_bot();
+						
 
-						std::string activeDeveloperBadge_str, haveDiscordNitro_str, isBot_str, isCertifiedModerator_str, isDiscordEmployee_str, isEarlySupporter_str, hypesquad_str, bughunter_str, mfa_str;
+						std::string activeDeveloperBadge_str, haveDiscordNitro_str, isBot_str, isCertifiedModerator_str, isDiscordEmployee_str, isEarlySupporter_str, hypesquad_str, bughunter_str, mfa_str, partnered_str, verifiedacc_str, verifiedbot_str, earlybotdev_str;
 
 						switch (activeDeveloperBadge) {
 						case 0 || false:
@@ -228,6 +232,62 @@ int main() {
 
 						}
 
+						switch (isPartnered) {
+						case 0 || false:
+							partnered_str = "<a:no2:1127991706156015626>";
+							break;
+
+						case 1 || true:
+							partnered_str = "<:yes:1127991707863093359>";
+							break;
+
+						default:
+							break;
+
+						}
+
+						switch (isVerifiedAcc) {
+						case 0 || false:
+							verifiedacc_str = "<a:no2:1127991706156015626>";
+							break;
+
+						case 1 || true:
+							verifiedacc_str = "<:yes:1127991707863093359>";
+							break;
+
+						default:
+							break;
+
+						}
+
+						switch (isearlybotdev2) {
+						case 0 || false:
+							earlybotdev_str = "<a:no2:1127991706156015626>";
+							break;
+
+						case 1 || true:
+							earlybotdev_str = "<:yes:1127991707863093359>";
+							break;
+
+						default:
+							break;
+
+						}
+
+						switch (isVerifiedBot) {
+						case 0 || false:
+							verifiedbot_str = "<a:no2:1127991706156015626>";
+							break;
+
+						case 1 || true:
+							verifiedbot_str = "<:yes:1127991707863093359>";
+							break;
+
+						default:
+							break;
+
+						}
+
 						const embed embed_userinfo = embed()
 							.set_color(ec_default)
 							.set_author(user.username, "https://discord.gg/bYDhwFFVk5 ", user.get_avatar_url())
@@ -235,20 +295,49 @@ int main() {
 							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, true)
 							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, true)
 							.add_field("<a:hypesquad34:1128024167472697374> | HpyeSquad", hypesquad_str, true)
-
 							.add_field("<:earlysupporter:1128019763797434409> | ¿Es early supporter?", isEarlySupporter_str, true)
 							.add_field("<:certifiedmod:1128014727277183026> | ¿Es moderador certificado de Discord?", isCertifiedModerator_str, true)
 							.add_field("<:discordemployee:1128018688822485012> | ¿Es empleado de Discord?", isDiscordEmployee_str, true)
 							.add_field("<:bot:1127621337700122745> | ¿Es un bot?", isBot_str, true)
+							.add_field("<:verifiedbot:1128901397002321931> | ¿Es un bot verificado?", verifiedbot_str, true)
+							.add_field("<:earlybotdev:1128903773662752849> | ¿Es un desarrollador de Discord certificado?", earlybotdev_str, true)
 							.add_field("<:bughunter:1128027090915180707> | ¿Es un bug hunter de Discord?", bughunter_str, true)
 							.add_field("<:2fa:1128034931365400617> | ¿Tiene la seguridad 2fa?", mfa_str, true)
-							//.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el...", marca, true)
+							.add_field("<:partnered:1128896026363834438> | ¿Es partner?", partnered_str, true)
+							.add_field("<:verified:1128898205418000444> | ¿Es una cuenta verificada?", verifiedacc_str, true)
+							.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el", "*Pronto...*", true)
 							.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || developed by dev.ferrnnaando || " + utility::current_date_time()));
 
 						std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado. - https://discord.gg/bYDhwFFVk5" << std::endl;
-						event.reply(message(interaction.get_channel().id, embed_userinfo));			 					
-				
+						event.reply(message(interaction.get_channel().id, embed_userinfo));	
+
 			}
+			else if (interaction.get_command_name() == "avatar") {
+
+				auto subcommand = cmd_data;
+				dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+				
+				const embed embed_avatar = embed()
+					.set_color(ec_default)
+					.set_image(avatar.get_avatar_url(1300))
+					.set_footer(embed_footer().set_text("Solicitado por " + interaction.usr.username).set_icon(interaction.usr.get_avatar_url()));
+					//.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || developed by dev.ferrnnaando || " + utility::current_date_time()));
+
+				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name()  << " ejecutado. - https://discord.gg/bYDhwFFVk5" << std::endl;
+				event.reply(message(interaction.get_channel().id, embed_avatar));
+
+		  }
+			else if (interaction.get_command_name() == "serverinfo") {
+				const embed embed_serverinfo = embed()
+					.set_color(ec_default)
+					.set_author(interaction.usr.username, "https://discord.gg/bYDhwFFVk5 ", interaction.usr.get_avatar_url())
+					.set_description("<a")
+					.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || developed by dev.ferrnnaando || " + utility::current_date_time()));
+
+				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado. - https://discord.gg/bYDhwFFVk5" << std::endl;
+				event.reply(message(interaction.get_channel().id, embed_serverinfo));
+
+		  }
 		}
 		});
 
@@ -257,18 +346,24 @@ int main() {
 			bytebot.set_presence(presence(ps_idle, at_listening, "/commands")); //define bot status
 
 			if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
-				dpp::slashcommand userinfo("userinfo", "Soy capaz de mostrarte toda la informacion posible sobre cualquier persona de la faz de la tierra.", bytebot.me.id);
-				userinfo.add_option(
-					command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true)
-					//.add_option(command_option(co_user, "user", "user", false))
-				);
+				dpp::slashcommand userinfo("userinfo", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
+				userinfo.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true));
 
-				bytebot.global_command_create(slashcommand("ping", "Pong!", bytebot.me.id));
+				slashcommand avatar("avatar", "Muestra la foto de perfil de alguien.", bytebot.me.id);
+				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", true));
+
+				slashcommand serverinfo("serverinfo", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
+
+				//bytebot.global_command_create(slashcommand("ping", "Pong!", bytebot.me.id));
 				bytebot.global_command_create(slashcommand("commands", "¡Muestra de lo que soy capaz!", bytebot.me.id));
+
+				//utilitties (just will be displayed for oneself)
 				bytebot.global_command_create(userinfo);
+				bytebot.global_command_create(avatar);
+				bytebot.global_command_create(serverinfo);
 
 			}
-			});
+		});
 
 
 	bytebot.start(st_wait);
