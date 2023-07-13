@@ -6,12 +6,8 @@ using namespace std;
 
 const uint64_t ec_default = colors::pink;
 const uint64_t ec_error = colors::red_blood; //embed color
-const string blacklisted_users[3] = { "1", "2", "3" };
-
-//const auto badge = user::is_active_developer;
-char marca[100];
-
-string test[2] = { "10681266543685", "921516505735262251" };
+const string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
+const string blacklisted_users[3] = { "122222", "921516505735262251", "3" };
 
 int main() {
 	//Create bot cluster
@@ -27,11 +23,12 @@ int main() {
 	bytebot.on_slashcommand([&bytebot](const slashcommand_t& event) { //DO find arrays with find and end.
 		dpp::interaction interaction = event.command;
 		dpp::command_interaction cmd_data = interaction.get_command_interaction();
+		auto subcommand = cmd_data;
 
-		if (event.command.usr.id == test[0] || event.command.usr.id == test[1]) {
+		if (event.command.usr.id == blacklisted_users[0] || event.command.usr.id == blacklisted_users[1]) {
 			const embed embed_blacklisted = embed()
 				.set_color(ec_error)
-				.set_author(" ByteBot", "https://discord.gg/bYDhwFFVk5", "https://i.imgur.com/U95zuYh.png")
+				.set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
 				.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de Node en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
 				.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
 
@@ -49,7 +46,7 @@ int main() {
 			else if (interaction.get_command_name() == "commands") {
 				const embed embed_commands = embed()
 					.set_color(ec_default)
-					.set_author(" ByteBot", "https://discord.gg/bYDhwFFVk5", "https://i.imgur.com/U95zuYh.png")
+					.set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
 					.set_description("`/commands` | **¡Hola! Maybe you know me, maybe not. Anyway, Im here to help you making discord a chiller place. My commands are sub-divided into categories**");
 
 				event.reply(message(event.command.get_channel().id, embed_commands));
@@ -87,7 +84,7 @@ int main() {
 				const auto isPartnered = user.is_partnered_owner();
 				const auto mfaEnabled = user.is_mfa_enabled();
 				const auto isBot = user.is_bot();
-		//		const auto nickname= guild_member::nickname.user;
+		//		const auto nickname = interaction.usr.nickname;
 
 				switch (activeDeveloperBadge) {
 				case 0 || false:
@@ -155,7 +152,7 @@ int main() {
 					break;
 				}
 
-						switch (isDiscordEmployee) {
+				switch (isDiscordEmployee) {
 						case 0 || false:
 							isDiscordEmployee_str = "<a:no2:1127991706156015626>";
 							break;
@@ -303,6 +300,7 @@ int main() {
 						const embed embed_userinfo = embed()
 							.set_color(ec_default)
 							.set_thumbnail(user.get_avatar_url())
+							.set_author("Información del usuario " + user.username, discord_link_inv, user.get_avatar_url())
 							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, true)
 							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, true)
 							.add_field("<a:hypesquad34:1128024167472697374> | HpyeSquad", hypesquad_str, true)
@@ -319,7 +317,7 @@ int main() {
 							.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el", "*Pronto...*", true)
 							//.add_field("<:joinedat:1129010450638590024> | Se unió al servidor el", "a", true)
 							.add_field("<:joinedat:1129010450638590024> | ¿Ha hecho rejoin?", "aa", true)
-							.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || " + utility::current_date_time()));
+							.set_footer(embed_footer().set_text(discord_link_inv + " || " + utility::current_date_time()));
 
 						std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
 						event.reply(message(interaction.get_channel().id, embed_userinfo).set_flags(m_ephemeral));	
@@ -332,8 +330,7 @@ int main() {
 				//const auto server_owner = guild::owner_id;
 			//	const auto is_partnered3 = interaction.get_guild(interaction.guild.gk);
 
-
-				const std::string info_str = "**" + std::to_string(get_channel_count()) + "** *canales*, " + " **" + std::to_string(get_role_count()) + "** *roles*,  **" + std::to_string(get_emoji_count()) + "** *emojis*.";
+				const std::string info_str = "**" + std::to_string(get_channel_count()) + "** *canales*, " + " **" + std::to_string(get_role_count()) + "** *roles*,  **" + std::to_string(get_emoji_count()) + "** *emojis*, **" + std::to_string(get_user_count()) + "** *usuarios*.";
 
 				std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::from_time_t(1420070400);
 				std::chrono::duration<double> duration(guild_created_at);
@@ -350,15 +347,13 @@ int main() {
 					.add_field("<:channel:1129045509059903558> | Informacion general", info_str, true)
 					//.add_field(" | Dueño ", , true)
 					//.set_image()
-					.set_footer(embed_footer().set_text("https://discord.gg/bYDhwFFVk5 || " + utility::current_date_time()));
+					.set_footer(embed_footer().set_text(discord_link_inv + " || " + utility::current_date_time()));
 
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
 				event.reply(message(interaction.get_channel().id, embed_serverinfo).set_flags(m_ephemeral));
 
 		  }
-		  else if (interaction.get_command_name() == "avatar") {
-
-				auto subcommand = cmd_data;
+		  else if (interaction.get_command_name() == "avatar") {	
 				dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
 
 				const embed embed_avatar = embed()
@@ -369,28 +364,47 @@ int main() {
 				event.reply(message(interaction.get_channel().id, embed_avatar).set_flags(m_ephemeral));
 
 			}
+		  else if (interaction.get_command_name() == "report") {
+			  std::string report_str = std::get <std::string>(event.get_parameter("mensaje"));
+
+			  std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
+			  event.reply(report_str);
+			  //event.reply(message("aa").set_flags(m_ephemeral));
+			}
 		}
 		});
 
 		//Register slash commands
 		bytebot.on_ready([&bytebot](const ready_t& event) {
-			bytebot.set_presence(presence(ps_idle, at_listening, "/commands")); //define bot status
+			bytebot.set_presence(presence(ps_idle, at_listening, "/commands en " + std::to_string(get_guild_count()))); //define bot status
 
 			if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
+				
+				//########################################################################################################################
+
 				dpp::slashcommand userinfo("userinfo", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
 				userinfo.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true));
 
-				bytebot.global_command_create(slashcommand("serverinfo", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id));
+				slashcommand serverinfo("serverinfo", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
 
 				slashcommand avatar("avatar", "Muestra la foto de perfil de alguien.", bytebot.me.id);
 				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", true));
 
-				//bytebot.global_command_create(slashcommand("ping", "Pong!", bytebot.me.id));
+				//########################################################################################################################
+
+				slashcommand report("report", "Envia un mensaje de error o queja de forma directa al desarrollador de ByteBot", bytebot.me.id);
+				report.add_option(command_option(co_string, "mensaje", "Envia un mensaje a los desarrolladores. Un uso inpropio conlleva la prohibicìón.", true));
+
+				//main slashcmd
 				bytebot.global_command_create(slashcommand("commands", "¡Muestra de lo que soy capaz!", bytebot.me.id));
 
 				//utilitties (just will be displayed for oneself)
 				bytebot.global_command_create(userinfo);
+				bytebot.global_command_create(serverinfo);
 				bytebot.global_command_create(avatar);
+				
+				//others (not will be displayed for another thats not herslf)
+				bytebot.global_command_create(report);
 				
 
 
