@@ -7,7 +7,9 @@ using namespace std;
 const uint64_t ec_default = colors::pink;
 const uint64_t ec_error = colors::red_blood; //embed color
 const string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
-const string blacklisted_users[3] = { "122222", "921516505735262251", "3" };
+const string banner_url = "https://i.imgur.com/QN4KH0H.png";
+const string logo_url = "https://i.imgur.com/pLxW45q.png";
+const string blacklisted_users[3] = { "691685438502469642", "921516505735262251", "3" };
 
 int main() {
 	//Create bot cluster
@@ -15,9 +17,6 @@ int main() {
 
 	//Output log information
 	bytebot.on_log(utility::cout_logger());
-
-
-
 
 	//Handler for slash commands
 	bytebot.on_slashcommand([&bytebot](const slashcommand_t& event) { //DO find arrays with find and end.
@@ -29,18 +28,22 @@ int main() {
 			const embed embed_blacklisted = embed()
 				.set_color(ec_error)
 				.set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
-				.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de Node en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
+				.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de ByteBot en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
 				.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
 
-			event.reply(message(event.command.get_channel().id, embed_blacklisted));
-			bytebot.message_add_reaction(event.command.msg.id, event.command.get_channel().id, "🙂", utility::log_error()); //check err
-			cout << event.command.message_id;
+			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Alguien intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
+			event.reply(message(event.command.get_channel().id, embed_blacklisted).set_flags(m_ephemeral));
 
 		}
 		else {
-
-			if (event.command.get_command_name() == "ping") {
-				event.reply("Pong");
+			if (interaction.get_command_name() == "bytebot") {
+				const dpp::embed embed_bytebot = embed()
+					.set_author("ByteBot", "https://discord.gg/bYDhwFFVk5", logo_url)
+					.set_color(ec_default)
+					.set_image(banner_url)
+					.set_description("¡Hola! Este es lecota drago marica");
+				
+				event.reply(message(interaction.get_channel().id, embed_bytebot).set_flags(m_ephemeral));
 
 			}
 			else if (interaction.get_command_name() == "commands") {
@@ -301,22 +304,22 @@ int main() {
 							.set_color(ec_default)
 							.set_thumbnail(user.get_avatar_url())
 							.set_author("Información del usuario " + user.username, discord_link_inv, user.get_avatar_url())
-							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, true)
-							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, true)
-							.add_field("<a:hypesquad34:1128024167472697374> | HpyeSquad", hypesquad_str, true)
-							.add_field("<:earlysupporter:1128019763797434409> | ¿Es early supporter?", isEarlySupporter_str, true)
-							.add_field("<:certifiedmod:1128014727277183026> | ¿Es moderador certificado de Discord?", isCertifiedModerator_str, true)
-							.add_field("<:discordemployee:1128018688822485012> | ¿Es empleado de Discord?", isDiscordEmployee_str, true)
-							.add_field("<:bot:1127621337700122745> | ¿Es un bot?", isBot_str, true)
-							.add_field("<:verifiedbot:1128901397002321931> | ¿Es un bot verificado?", verifiedbot_str, true)
-							.add_field("<:earlybotdev:1128903773662752849> | ¿Es un desarrollador de Discord certificado?", earlybotdev_str, true)
-							.add_field("<:bughunter:1128027090915180707> | ¿Es un bug hunter de Discord?", bughunter_str, true)
-							.add_field("<:2fa:1128034931365400617> | ¿Tiene la seguridad 2fa?", mfa_str, true)
-							.add_field("<:partnered:1128896026363834438> | ¿Es partner?", partnered_str, true)
-							.add_field("<:verified:1128898205418000444> | ¿Es una cuenta verificada?", verifiedacc_str, true)
-							.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el", "*Pronto...*", true)
+							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, false)
+							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, false)
+							.add_field("<a:hypesquad34:1128024167472697374> | HpyeSquad", hypesquad_str, false)
+							.add_field("<:earlysupporter:1128019763797434409> | ¿Es early supporter?", isEarlySupporter_str, false)
+							.add_field("<:certifiedmod:1128014727277183026> | ¿Es moderador certificado de Discord?", isCertifiedModerator_str, false)
+							.add_field("<:discordemployee:1128018688822485012> | ¿Es empleado de Discord?", isDiscordEmployee_str, false)
+							.add_field("<:bot:1127621337700122745> | ¿Es un bot?", isBot_str, false)
+							.add_field("<:verifiedbot:1128901397002321931> | ¿Es un bot verificado?", verifiedbot_str, false)
+							.add_field("<:earlybotdev:1128903773662752849> | ¿Es un desarrollador de Discord certificado?", earlybotdev_str, false)
+							.add_field("<:bughunter:1128027090915180707> | ¿Es un bug hunter de Discord?", bughunter_str, false)
+							.add_field("<:2fa:1128034931365400617> | ¿Tiene la seguridad 2fa?", mfa_str, false)
+							.add_field("<:partnered:1128896026363834438> | ¿Es partner?", partnered_str, false)
+							.add_field("<:verified:1128898205418000444> | ¿Es una cuenta verificada?", verifiedacc_str, false)
+							.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el", "*Pronto...*", false)
 							//.add_field("<:joinedat:1129010450638590024> | Se unió al servidor el", "a", true)
-							.add_field("<:joinedat:1129010450638590024> | ¿Ha hecho rejoin?", "aa", true)
+							.add_field("<:joinedat:1129010450638590024> | ¿Ha hecho rejoin?", "aa", false)
 							.set_footer(embed_footer().set_text(discord_link_inv + " || " + utility::current_date_time()));
 
 						std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
@@ -367,16 +370,21 @@ int main() {
 		  else if (interaction.get_command_name() == "report") {
 			  std::string report_str = std::get <std::string>(event.get_parameter("mensaje"));
 
+			  const dpp::embed embed_report = embed()
+				  .set_color(ec_error)
+				  .set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
+				  .set_footer(embed_footer().set_text("Solicitado por " + interaction.usr.id + interaction.usr.discriminator));
+
 			  std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
-			  event.reply(report_str);
-			  //event.reply(message("aa").set_flags(m_ephemeral));
+			  bytebot.direct_message_create(1068126654368583770, report_str); //message(interaction.get_channel().id, embed_report))
+			  event.reply("<:clydecheck:1129147137146503278> | Mensaje enviado.");
 			}
 		}
 		});
 
 		//Register slash commands
 		bytebot.on_ready([&bytebot](const ready_t& event) {
-			bytebot.set_presence(presence(ps_idle, at_listening, "/commands en " + std::to_string(get_guild_count()))); //define bot status
+			bytebot.set_presence(presence(ps_idle, at_listening, "/commands en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status
 
 			if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
 				
@@ -391,12 +399,16 @@ int main() {
 				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", true));
 
 				//########################################################################################################################
+				//########################################################################################################################
 
 				slashcommand report("report", "Envia un mensaje de error o queja de forma directa al desarrollador de ByteBot", bytebot.me.id);
-				report.add_option(command_option(co_string, "mensaje", "Envia un mensaje a los desarrolladores. Un uso inpropio conlleva la prohibicìón.", true));
+				report.add_option(command_option(co_string, "mensaje", "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibicìón", true));
+
+				//########################################################################################################################
 
 				//main slashcmd
-				bytebot.global_command_create(slashcommand("commands", "¡Muestra de lo que soy capaz!", bytebot.me.id));
+				bytebot.global_command_create(slashcommand("commands", "Muestra de lo que soy capaz", bytebot.me.id));
+				bytebot.global_command_create(slashcommand("bytebot", "Comando principal de ByteBot el cual te dirá que hacer conmigo", bytebot.me.id));
 
 				//utilitties (just will be displayed for oneself)
 				bytebot.global_command_create(userinfo);
