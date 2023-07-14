@@ -27,7 +27,7 @@ int main() {
 		if (event.command.usr.id == blacklisted_users[0] || event.command.usr.id == blacklisted_users[1]) {
 			const embed embed_blacklisted = embed()
 				.set_color(ec_error)
-				.set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
+				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 				.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de ByteBot en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
 				.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
 
@@ -40,6 +40,7 @@ int main() {
 				const dpp::embed embed_bytebot = embed()
 					.set_color(ec_default)
 					//.set_image(banner_url)
+					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 					.set_title("El poder de ByteBot en tus teclas.")
 					.set_description("¡Saludos, querido usuario!\n\nPermíteme presentarme, soy ByteBot, tu asistente virtual personal diseñado para brindarte una experiencia segura y optimizada en este servidor. Estoy aquí para ayudarte con la configuración y la administración, asegurando que tus necesidades de seguridad se cumplan y que puedas disfrutar de un entorno confiable.\n\nComo experto en seguridad, puedo ayudarte a proteger tus datos y a mantener el servidor seguro. Puedo implementar funciones como verificación de dos factores (2FA) para asegurar que solo usuarios autorizados tengan acceso, y puedo monitorear y filtrar mensajes en busca de contenido no deseado.\n\nPero mi papel no se limita solo a la seguridad. También puedo ayudarte con la configuración y personalización del servidor. Desde establecer roles y permisos hasta gestionar canales y categorías, estoy aquí para asegurarme de que todo esté configurado según tus preferencias y necesidades.\n\nAdemás, como asistente de administración, puedo realizar tareas rutinarias y automatizar procesos para que puedas dedicar más tiempo a interactuar con los miembros del servidor. Puedo programar recordatorios, gestionar eventos y facilitar la moderación para mantener un entorno armonioso y organizado.\n\nMi objetivo es brindarte tranquilidad y eficiencia en la administración de este servidor. Estoy aquí para resolver tus consultas, proporcionar orientación y ser tu compañero confiable en la gestión diaria.\n\n¡Aprovecha el poder de ByteBot y descubre todo lo que puedo hacer por ti! Si necesitas ayuda o tienes alguna consulta, simplemente escribe `!ayuda` y estaré encantado de asistirte.\n\nGracias por permitirme ser parte de tu experiencia en este servidor. Espero hacer de tu tiempo aquí algo seguro y sin complicaciones. ¡Disfruta y confía en ByteBot para una experiencia de servidor excepcional!") // Descripción del bot				
 					.add_field("Soporte", "```Estoy aquí para ofrecerte un soporte técnico confiable y eficiente. Si tienes alguna pregunta, problema o consulta, no dudes en escribir `!ayuda` o mencionarme. Estaré encantado de brindarte asistencia y resolver cualquier inconveniente que puedas tener.```", true) // Campo de Soporte
@@ -53,7 +54,7 @@ int main() {
 			else if (interaction.get_command_name() == "commands") {
 				const embed embed_commands = embed()
 					.set_color(ec_default)
-					.set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
+					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 					.set_description("`/commands` | **¡Hola! Maybe you know me, maybe not. Anyway, Im here to help you making discord a chiller place. My commands are sub-divided into categories**");
 
 				event.reply(message(event.command.get_channel().id, embed_commands));
@@ -129,63 +130,105 @@ int main() {
 
 				}
 
+				std::time_t timestamp_user = user.get_creation_time();
+
+				std::tm* fecha_hora_user = std::gmtime(&timestamp_user);
+				char buffer_user[80];
+				std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
+				std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
+
+
 				if (user.is_bot()) {
 					const dpp::embed embed_infousuario = embed()
-						.set_author(dpp::find_guild_member(interaction.guild_id, interaction.usr.id).get_avatar_url(), "", logo_url)
+						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 						.set_color(ec_default)
 						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
 						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
 						.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
 						.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false);
+						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false)
+						.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false);
 
 					event.reply(message(interaction.get_channel().id, embed_infousuario));
 
 				}
 				else if (!user.is_bot()) {
 					const dpp::embed embed_infousuario = embed()
-						.set_author(dpp::find_guild_member(interaction.guild_id, interaction.usr.id).get_avatar_url(), "", logo_url)
+						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 						.set_color(ec_default)
 						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
 						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
 						.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true)
 						.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true)
-						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false);
+						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false)
+						.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false);
 
 					event.reply(message(interaction.get_channel().id, embed_infousuario));
 
 				}
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
 
+
 			}
-			else if (interaction.get_command_name() == "serverinfo") {
+			else if (interaction.get_command_name() == "infoservidor") {
+				const auto guild_created_at = interaction.get_guild().get_creation_time();
+				const auto guild_owner_id = interaction.get_guild().owner_id;
+				const auto guild_id = interaction.get_guild().id;
+				const auto guild_is_partnered = interaction.get_guild().is_partnered();
 
-				const auto guild_id = interaction.guild_id;
-				const double guild_created_at = interaction.guild_id.get_creation_time();
-				//const auto server_owner = guild::owner_id;
-			//	const auto is_partnered3 = interaction.get_guild(interaction.guild.gk);
+				const auto total_guild_channels = get_channel_count();
+				const auto total_guild_roles = get_role_count();
+				const auto total_guild_emojis = get_emoji_count();
 
-				const std::string info_str = "**" + std::to_string(get_channel_count()) + "** *canales*, " + " **" + std::to_string(get_role_count()) + "** *roles*,  **" + std::to_string(get_emoji_count()) + "** *emojis*, **" + std::to_string(get_user_count()) + "** *usuarios*.";
+				std::string partnered_guild_str;
+				
+				const auto& guild_channels = interaction.get_guild().channels;
+				//<:publicguild:1129249322228264960>
+				for (int var = 0; var < total_guild_channels; var++) {
+					if (var < guild_channels.size()) {
+						const auto& channel = guild_channels[var];
+						std::cout << "Tst" << std::endl;
+					}
+					else {
+						// El índice está fuera del rango del vector
+						std::cout << "Índice fuera de rango: " << var << std::endl;
+					}
+				}
 
-				std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::from_time_t(1420070400);
-				std::chrono::duration<double> duration(guild_created_at);
-				start_time += std::chrono::duration_cast<std::chrono::system_clock::duration>(duration);
-				std::time_t timestamp = std::chrono::system_clock::to_time_t(start_time);
-				std::stringstream ss;
-				ss << std::put_time(std::gmtime(&timestamp), "%Y-%m-%d %H:%M:%S");
-				std::string timestamp_str = ss.str();
+				std::time_t timestamp_guild = interaction.get_guild().get_creation_time();
+				std::tm* fecha_hora_guild = std::gmtime(&timestamp_guild);
+				char buffer_guild[80];
+				std::strftime(buffer_guild, sizeof(buffer_guild), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_guild);
+				std::string formatted_date_guild = "```" + std::string(buffer_guild) + "```";
 
-				const embed embed_serverinfo = embed()
+				switch (guild_is_partnered) {
+				case 0 || false:
+					partnered_guild_str = "```No.```";
+					break;
+				case 1 || true:
+					partnered_guild_str = "```Si.```";
+					break;
+
+				default:
+					break;
+				}
+
+				const dpp::embed embed_infoservidor = embed()
+					.set_image(interaction.get_guild().get_banner_url())
 					.set_color(ec_default)
-					.add_field("<:nofaceid:1129006938773016666> | ID del servidor", std::to_string(guild_id), true)
-					.add_field("<:clock_timestamp:1128052428688867370> | Creado el", timestamp_str, true)
-					.add_field("<:channel:1129045509059903558> | Informacion general", info_str, true)
-					//.add_field(" | Dueño ", , true)
-					//.set_image()
-					.set_footer(embed_footer().set_text(discord_link_inv + " || " + utility::current_date_time()));
+					.add_field("<:owner:1129273470040158319> Propietario", "<@" + std::to_string(guild_owner_id) + ">", true)
+					.add_field("<:publicguild:1129249322228264960> Nombre del servidor", "```" + interaction.get_guild().name + "```", true)
+					.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, true)
+
+					//.add_field("<:publicguild:1129249322228264960> Canales", "`" + std::to_string(get_channel_count())  + "`, <#" + std::to_string(text) + ">", true);
+					.add_field("<:insights:1129270499378208768> Canales", "```" + std::to_string(total_guild_channels) + "```", true)
+					.add_field("<:insights:1129270499378208768> Roles", "```" + std::to_string(total_guild_roles) + "```", true)
+					.add_field("<:insights:1129270499378208768> Emojis", "```" + std::to_string(total_guild_emojis) + "```", true)
+					.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(guild_id) + "```", false)
+					.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false);
 
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
-				event.reply(message(interaction.get_channel().id, embed_serverinfo).set_flags(m_ephemeral));
+				event.reply(message(interaction.get_channel().id, embed_infoservidor));
 
 		  }
 		  else if (interaction.get_command_name() == "avatar") {	
@@ -225,7 +268,7 @@ int main() {
 				dpp::slashcommand infousuario("infousuario", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
 				infousuario.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true));
 
-				slashcommand serverinfo("serverinfo", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
+				slashcommand infoservidor("infoservidor", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
 
 				slashcommand avatar("avatar", "Muestra la foto de perfil de alguien.", bytebot.me.id);
 				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", true));
@@ -244,7 +287,7 @@ int main() {
 
 				//utilitties (just will be displayed for oneself)
 				bytebot.global_command_create(infousuario);
-				bytebot.global_command_create(serverinfo);
+				bytebot.global_command_create(infoservidor);
 				bytebot.global_command_create(avatar);
 				
 				//others (not will be displayed for another thats not herslf)
