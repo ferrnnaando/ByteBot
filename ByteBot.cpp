@@ -38,11 +38,15 @@ int main() {
 		else {
 			if (interaction.get_command_name() == "bytebot") {
 				const dpp::embed embed_bytebot = embed()
-					.set_author("ByteBot", "https://discord.gg/bYDhwFFVk5", logo_url)
 					.set_color(ec_default)
-					.set_image(banner_url)
-					.set_description("¡Hola! Este es lecota drago marica");
-				
+					//.set_image(banner_url)
+					.set_title("El poder de ByteBot en tus teclas.")
+					.set_description("¡Saludos, querido usuario!\n\nPermíteme presentarme, soy ByteBot, tu asistente virtual personal diseñado para brindarte una experiencia segura y optimizada en este servidor. Estoy aquí para ayudarte con la configuración y la administración, asegurando que tus necesidades de seguridad se cumplan y que puedas disfrutar de un entorno confiable.\n\nComo experto en seguridad, puedo ayudarte a proteger tus datos y a mantener el servidor seguro. Puedo implementar funciones como verificación de dos factores (2FA) para asegurar que solo usuarios autorizados tengan acceso, y puedo monitorear y filtrar mensajes en busca de contenido no deseado.\n\nPero mi papel no se limita solo a la seguridad. También puedo ayudarte con la configuración y personalización del servidor. Desde establecer roles y permisos hasta gestionar canales y categorías, estoy aquí para asegurarme de que todo esté configurado según tus preferencias y necesidades.\n\nAdemás, como asistente de administración, puedo realizar tareas rutinarias y automatizar procesos para que puedas dedicar más tiempo a interactuar con los miembros del servidor. Puedo programar recordatorios, gestionar eventos y facilitar la moderación para mantener un entorno armonioso y organizado.\n\nMi objetivo es brindarte tranquilidad y eficiencia en la administración de este servidor. Estoy aquí para resolver tus consultas, proporcionar orientación y ser tu compañero confiable en la gestión diaria.\n\n¡Aprovecha el poder de ByteBot y descubre todo lo que puedo hacer por ti! Si necesitas ayuda o tienes alguna consulta, simplemente escribe `!ayuda` y estaré encantado de asistirte.\n\nGracias por permitirme ser parte de tu experiencia en este servidor. Espero hacer de tu tiempo aquí algo seguro y sin complicaciones. ¡Disfruta y confía en ByteBot para una experiencia de servidor excepcional!") // Descripción del bot				
+					.add_field("Soporte", "```Estoy aquí para ofrecerte un soporte técnico confiable y eficiente. Si tienes alguna pregunta, problema o consulta, no dudes en escribir `!ayuda` o mencionarme. Estaré encantado de brindarte asistencia y resolver cualquier inconveniente que puedas tener.```", true) // Campo de Soporte
+					.add_field("Automatización", "```Simplifica tu vida y ahorra tiempo con mi capacidad para automatizar tareas. Puedo encargarme de recordatorios, eventos programados y moderación automática, permitiéndote concentrarte en otras actividades importantes en el servidor. \n ```", true) // Campo de Automatización
+					.add_field("", "", false)
+					.add_field("Personalización", "```Haz que el servidor sea único y se adapte a tus necesidades mediante mi capacidad de configuración y personalización. Puedo ayudarte a establecer roles, permisos, canales y categorías de manera precisa y eficiente. \n ```", true) // Campo de Personalización
+					.add_field("Seguridad Avanzada", "```Protege tu servidor y tus datos con mi conjunto de funciones de seguridad avanzadas. Desde la verificación de dos factores (2FA) hasta la detección y filtrado de contenido no deseado, estoy aquí para garantizar un entorno seguro para todos los miembros.```", true); //a
 				event.reply(message(interaction.get_channel().id, embed_bytebot).set_flags(m_ephemeral));
 
 			}
@@ -57,273 +61,101 @@ int main() {
 				 
 
 			}
-			else if (interaction.get_command_name() == "userinfo") {
-				auto subcommand = cmd_data;
-				
+			else if (interaction.get_command_name() == "infousuario") {
 				dpp::user user = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
 
-				std::string has_rejoined_str, activeDeveloperBadge_str, haveDiscordNitro_str, isBot_str, isCertifiedModerator_str, isDiscordEmployee_str, isEarlySupporter_str, hypesquad_str, bughunter_str, mfa_str, partnered_str, verifiedacc_str, verifiedbot_str, earlybotdev_str;
-				const auto activeDeveloperBadge = user.is_active_developer();
+				const auto username = "```" + user.username + "```";
+				const auto username_discriminator = "```" + std::to_string(user.discriminator) + "```";
+				const auto username_have_nitro_basic = user.has_nitro_basic();
+				const auto username_have_nitro_classic = user.has_nitro_classic();
+				const auto username_have_nitro_full = user.has_nitro_full();
+				const auto is_bot_verified = user.is_verified_bot();
+				const auto is_house_brilliance = user.is_house_brilliance();
+				const auto is_house_bravery = user.is_house_bravery();
+				const auto is_house_balance = user.is_house_balance();
+				const auto is_early_supporter = user.is_early_supporter();
+				std::string have_nitro, is_bot_verified_str, hypesquad_str;
 
-				const auto haveDiscordNitroB = user.has_nitro_basic();
-				const auto haveDiscordNitroC = user.has_nitro_classic();
-				const auto haveDiscordNitroF = user.has_nitro_full();
+				if (is_house_balance) {
+					hypesquad_str = "```Sí. (House Balance)```";
 
-				const auto isEarlySupporter = user.is_early_supporter();
+				}
+				else if (is_house_bravery) {
+					hypesquad_str = "```Sí. (House Bravery)```";
 
-				const auto isHouseBrilliance = user.is_house_brilliance();
-				const auto isHouseBravery = user.is_house_bravery();
-				const auto isHouseBalance = user.is_house_balance();
+				}
+				else if (is_house_brilliance) {
+					hypesquad_str = "```Sí. (House Brilliance)```";
 
-				const auto isCertifiedModerator = user.is_certified_moderator();
-				const auto isDiscordEmployee = user.is_discord_employee();
-				const auto isBugHunterLv1 = user.is_bughunter_1();
-				const auto isBugHunterLv2 = user.is_bughunter_2();
-				const auto createTime = user.get_creation_time();
+				}
+				else {
+					hypesquad_str = "```No.```";
 
-				const auto isearlybotdev2 = user.is_verified_bot_dev();
-				const auto isVerifiedAcc = user.is_verified();
-				const auto isVerifiedBot = user.is_verified_bot();
-				const auto isPartnered = user.is_partnered_owner();
-				const auto mfaEnabled = user.is_mfa_enabled();
-				const auto isBot = user.is_bot();
-		//		const auto nickname = interaction.usr.nickname;
+				}
 
-				switch (activeDeveloperBadge) {
+
+				switch (username_have_nitro_basic) {
 				case 0 || false:
-					activeDeveloperBadge_str = "<a:no2:1127991706156015626>";
-					break;
+					have_nitro = "```No.```";
+					if (username_have_nitro_classic) {
+						have_nitro = "```Tiene nitro classic.```";
 
+					}
+					else if (username_have_nitro_full) {
+						have_nitro = "```Tiene nitro full.```";
+					}
+
+					break;
 				case 1 || true:
-					activeDeveloperBadge_str = "<:yes:1127991707863093359>";
-					break;
+					have_nitro = "```Sí.```";
+					if (username_have_nitro_classic) {
+						have_nitro = "```Tiene nitro classic.```";
 
-				default:
+					}
+					else if (username_have_nitro_full) {
+						have_nitro = "```Tiene nitro full.```";
+					}
 					break;
 				}
 
-				switch (haveDiscordNitroB) {
+				switch(is_bot_verified) {
 				case 0 || false:
-					haveDiscordNitro_str = "<a:no2:1127991706156015626>";
-					if (haveDiscordNitroC) {
-						haveDiscordNitro_str += ", <:yes:1127991707863093359> *(Discord Classic)*";
-					}
-
-					if (haveDiscordNitroF) {
-						haveDiscordNitro_str += ", <:yes:1127991707863093359> *(Discord Full)*";
-					}
+					is_bot_verified_str = "```No.```";
 					break;
-
+					
 				case 1 || true:
-					haveDiscordNitro_str = "<:yes:1127991707863093359> *(Discord Basic)*";
-					if (haveDiscordNitroC) {
-						haveDiscordNitro_str += ", <:yes:1127991707863093359> *(Discord Classic)*";
-					}
-
-					if (haveDiscordNitroF) {
-						haveDiscordNitro_str += ", <:yes:1127991707863093359> *(Discord Classic)*";
-					}
+					is_bot_verified_str = "```Sí.```";
 					break;
 
-				default:
-					break;
 				}
 
-				switch (isBot) {
-				case 0 || false:
-					isBot_str = "<a:no2:1127991706156015626>";
-					break;
+				if (user.is_bot()) {
+					const dpp::embed embed_infousuario = embed()
+						.set_author(dpp::find_guild_member(interaction.guild_id, interaction.usr.id).get_avatar_url(), "", logo_url)
+						.set_color(ec_default)
+						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
+						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
+						.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
+						.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
+						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false);
 
-				case 1 || true:
-					isBot_str = "<:yes:1127991707863093359>";
-					break;
+					event.reply(message(interaction.get_channel().id, embed_infousuario));
 
-				default:
-					break;
 				}
+				else if (!user.is_bot()) {
+					const dpp::embed embed_infousuario = embed()
+						.set_author(dpp::find_guild_member(interaction.guild_id, interaction.usr.id).get_avatar_url(), "", logo_url)
+						.set_color(ec_default)
+						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
+						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
+						.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true)
+						.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true)
+						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(user.id) + "```", false);
 
-				switch (isCertifiedModerator) {
-				case 0 || false:
-					isCertifiedModerator_str = "<a:no2:1127991706156015626>";
-					break;
+					event.reply(message(interaction.get_channel().id, embed_infousuario));
 
-				case 1 || true:
-					isCertifiedModerator_str = "<:yes:1127991707863093359>";
-					break;
-
-				default:
-					break;
 				}
-
-				switch (isDiscordEmployee) {
-						case 0 || false:
-							isDiscordEmployee_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							isDiscordEmployee_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						switch (isEarlySupporter) {
-						case 0 || false:
-							isEarlySupporter_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							isEarlySupporter_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-
-						if (isHouseBalance) {
-							hypesquad_str = "<:hypebalance:1128026294253269134> *(House Balance)*";
-
-						}
-						else if (isHouseBravery) {
-							hypesquad_str = "<:hypebravery:1128026297860366476> *(House Bravery)*";
-
-						}
-						else if (isHouseBrilliance) {
-							hypesquad_str = "<:hypebrilliance:1128026299781349416> *(House Brilliance)*";
-
-						}
-						else {
-							hypesquad_str = "<a:no2:1127991706156015626>";
-
-						}
-
-
-
-						if (isBugHunterLv1) {
-							bughunter_str = "<:bughunter:1128027090915180707> *(Lv1)*";
-
-						}
-						else if (isBugHunterLv2) {
-							bughunter_str = "<:bughunter2:1128027094203519057> *(Lv2)*";
-
-						}
-						else {
-							bughunter_str = "<a:no2:1127991706156015626>";
-
-						}
-
-						switch (mfaEnabled) {
-						case 0 || false:
-							mfa_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							mfa_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						switch (isPartnered) {
-						case 0 || false:
-							partnered_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							partnered_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						switch (isVerifiedAcc) {
-						case 0 || false:
-							verifiedacc_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							verifiedacc_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						switch (isearlybotdev2) {
-						case 0 || false:
-							earlybotdev_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							earlybotdev_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						switch (isVerifiedBot) {
-						case 0 || false:
-							verifiedbot_str = "<a:no2:1127991706156015626>";
-							break;
-
-						case 1 || true:
-							verifiedbot_str = "<:yes:1127991707863093359>";
-							break;
-
-						default:
-							break;
-
-						}
-
-						/*switch (have_nickname) {
-							case 0 || false:
-								has_rejoined_str = "<a:no2:1127991706156015626>";
-								break;
-
-							case 1 || true:
-								has_rejoined_str = "<:yes:1127991707863093359>";
-								break;
-
-							default:
-								break;
-
-						}*/
-
-						const embed embed_userinfo = embed()
-							.set_color(ec_default)
-							.set_thumbnail(user.get_avatar_url())
-							.set_author("Información del usuario " + user.username, discord_link_inv, user.get_avatar_url())
-							.add_field("<:active_developer:1127568563176222760> | ¿Es un desarrollador activo?", activeDeveloperBadge_str, false)
-							.add_field("<a:nitro:1127997712009273434> | ¿Tiene discord nitro?", haveDiscordNitro_str, false)
-							.add_field("<a:hypesquad34:1128024167472697374> | HpyeSquad", hypesquad_str, false)
-							.add_field("<:earlysupporter:1128019763797434409> | ¿Es early supporter?", isEarlySupporter_str, false)
-							.add_field("<:certifiedmod:1128014727277183026> | ¿Es moderador certificado de Discord?", isCertifiedModerator_str, false)
-							.add_field("<:discordemployee:1128018688822485012> | ¿Es empleado de Discord?", isDiscordEmployee_str, false)
-							.add_field("<:bot:1127621337700122745> | ¿Es un bot?", isBot_str, false)
-							.add_field("<:verifiedbot:1128901397002321931> | ¿Es un bot verificado?", verifiedbot_str, false)
-							.add_field("<:earlybotdev:1128903773662752849> | ¿Es un desarrollador de Discord certificado?", earlybotdev_str, false)
-							.add_field("<:bughunter:1128027090915180707> | ¿Es un bug hunter de Discord?", bughunter_str, false)
-							.add_field("<:2fa:1128034931365400617> | ¿Tiene la seguridad 2fa?", mfa_str, false)
-							.add_field("<:partnered:1128896026363834438> | ¿Es partner?", partnered_str, false)
-							.add_field("<:verified:1128898205418000444> | ¿Es una cuenta verificada?", verifiedacc_str, false)
-							.add_field("<:clock_timestamp:1128052428688867370> | Cuenta creada el", "*Pronto...*", false)
-							//.add_field("<:joinedat:1129010450638590024> | Se unió al servidor el", "a", true)
-							.add_field("<:joinedat:1129010450638590024> | ¿Ha hecho rejoin?", "aa", false)
-							.set_footer(embed_footer().set_text(discord_link_inv + " || " + utility::current_date_time()));
-
-						std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
-						event.reply(message(interaction.get_channel().id, embed_userinfo).set_flags(m_ephemeral));	
+				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
 
 			}
 			else if (interaction.get_command_name() == "serverinfo") {
@@ -384,14 +216,14 @@ int main() {
 
 		//Register slash commands
 		bytebot.on_ready([&bytebot](const ready_t& event) {
-			bytebot.set_presence(presence(ps_idle, at_listening, "/commands en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status
+			bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status
 
 			if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
 				
 				//########################################################################################################################
 
-				dpp::slashcommand userinfo("userinfo", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
-				userinfo.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true));
+				dpp::slashcommand infousuario("infousuario", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
+				infousuario.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", true));
 
 				slashcommand serverinfo("serverinfo", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
 
@@ -411,7 +243,7 @@ int main() {
 				bytebot.global_command_create(slashcommand("bytebot", "Comando principal de ByteBot el cual te dirá que hacer conmigo", bytebot.me.id));
 
 				//utilitties (just will be displayed for oneself)
-				bytebot.global_command_create(userinfo);
+				bytebot.global_command_create(infousuario);
 				bytebot.global_command_create(serverinfo);
 				bytebot.global_command_create(avatar);
 				
