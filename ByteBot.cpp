@@ -9,7 +9,7 @@ const uint64_t ec_error = colors::red_blood; //embed color
 const string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
 const string banner_url = "https://i.imgur.com/QN4KH0H.png";
 const string logo_url = "https://i.imgur.com/pLxW45q.png";
-const string blacklisted_users[3] = { "691685438502469642", "921516505735262251", "3" };
+const string blacklisted_users[3] = { "", "921516505735262251", "3" };
 
 int main() {
 	//Create bot cluster
@@ -175,25 +175,17 @@ int main() {
 				const auto guild_owner_id = interaction.get_guild().owner_id;
 				const auto guild_id = interaction.get_guild().id;
 				const auto guild_is_partnered = interaction.get_guild().is_partnered();
-
+				const auto guild_description = interaction.get_guild().description;
 				const auto total_guild_channels = get_channel_count();
 				const auto total_guild_roles = get_role_count();
 				const auto total_guild_emojis = get_emoji_count();
+				const auto guild_2fa_level = interaction.get_guild().mfa_level;
 
 				std::string partnered_guild_str;
 				
 				const auto& guild_channels = interaction.get_guild().channels;
 				//<:publicguild:1129249322228264960>
-				for (int var = 0; var < total_guild_channels; var++) {
-					if (var < guild_channels.size()) {
-						const auto& channel = guild_channels[var];
-						std::cout << "Tst" << std::endl;
-					}
-					else {
-						// El índice está fuera del rango del vector
-						std::cout << "Índice fuera de rango: " << var << std::endl;
-					}
-				}
+			
 
 				std::time_t timestamp_guild = interaction.get_guild().get_creation_time();
 				std::tm* fecha_hora_guild = std::gmtime(&timestamp_guild);
@@ -213,6 +205,8 @@ int main() {
 					break;
 				}
 
+				if(guild_description.empty()) {
+
 				const dpp::embed embed_infoservidor = embed()
 					.set_image(interaction.get_guild().get_banner_url())
 					.set_color(ec_default)
@@ -225,11 +219,32 @@ int main() {
 					.add_field("<:insights:1129270499378208768> Roles", "```" + std::to_string(total_guild_roles) + "```", true)
 					.add_field("<:insights:1129270499378208768> Emojis", "```" + std::to_string(total_guild_emojis) + "```", true)
 					.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(guild_id) + "```", false)
-					.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false);
+					.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false)
+					.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", "```" + std::to_string(guild_2fa_level) + "```", false);
+				
+				event.reply(message(interaction.get_channel().id, embed_infoservidor));
+				}
+				else {
+					const dpp::embed embed_infoservidor = embed()
+						.set_image(interaction.get_guild().get_banner_url())
+						.set_color(ec_default)
+						.add_field("<:owner:1129273470040158319> Propietario", "<@" + std::to_string(guild_owner_id) + ">", true)
+						.add_field("<:publicguild:1129249322228264960> Nombre del servidor", "```" + interaction.get_guild().name + "```", true)
+						.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, true)
+
+						//.add_field("<:publicguild:1129249322228264960> Canales", "`" + std::to_string(get_channel_count())  + "`, <#" + std::to_string(text) + ">", true);
+						.add_field("<:insights:1129270499378208768> Canales", "```" + std::to_string(total_guild_channels) + "```", true)
+						.add_field("<:insights:1129270499378208768> Roles", "```" + std::to_string(total_guild_roles) + "```", true)
+						.add_field("<:insights:1129270499378208768> Emojis", "```" + std::to_string(total_guild_emojis) + "```", true)
+						.add_field("<:idlog:1129209889739251813> ID", "```" + std::to_string(guild_id) + "```", false)
+						.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false)
+						.add_field("<:communityrules:1129286064549400647> Descripción", "```" + guild_description + "```", false)
+						.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", "```" + std::to_string(guild_2fa_level) + "```", false);
+
+					event.reply(message(interaction.get_channel().id, embed_infoservidor));
+				}
 
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
-				event.reply(message(interaction.get_channel().id, embed_infoservidor));
-
 		  }
 		  else if (interaction.get_command_name() == "avatar") {	
 				dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
