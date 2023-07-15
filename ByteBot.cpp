@@ -1,16 +1,8 @@
 #include "header.h"
-#pragma warning(disable : 4996)
+#include "variables.cpp"
+#include "functions.cpp"
 
-using namespace dpp; //testing
-using namespace std;
-
-const uint64_t ec_default = colors::pink;
-const uint64_t ec_error = colors::red_blood; //embed color
-const string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
-const string banner_url = "https://i.imgur.com/QN4KH0H.png";
-const string logo_url = "https://i.imgur.com/pLxW45q.png";
-const string blacklisted_users[3] = { "", "921516505735262251", "3" };
-bool val = true;
+using namespace dpp;
 
 void slashcmd_reg(const dpp::interaction& interaction) {
 	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
@@ -18,10 +10,23 @@ void slashcmd_reg(const dpp::interaction& interaction) {
 
 int main() {
 	//Create bot cluster
-	cluster bytebot(BOT_TOKEN, i_default_intents | i_message_content);
+	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 
 	//Output log information
+	bytebot.get_gateway_bot_sync();
 	bytebot.on_log(utility::cout_logger());
+
+	//Hander
+	bytebot.on_message_create([&bytebot](const dpp::message_create_t& msg) {
+		if (msg.msg.is_dm()) {
+			if (msg.msg.author.id != bytebot.me.id && msg.msg.is_dm()) { //avoid loop for self-replying
+				bytebot.start_timer([=, &bytebot](dpp::timer h) {
+					msg.reply("<:guide:1129765954834939944> ¿Necesitas ayuda? Escríbeme en un servidor.");
+					bytebot.stop_timer(h);
+					}, 2);
+			}
+		}
+	});
 
 	//Handler for slash commands
 	bytebot.on_slashcommand([&bytebot](const slashcommand_t& event) { //DO find arrays with find and end.
@@ -86,7 +91,7 @@ int main() {
 			else if (interaction.get_command_name() == "infousuario") {
 				dpp::user user = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
 				const auto username = "```" + user.username + "```";
-				const string username_avatar_formatted = "[Ver aquí](" + user.get_avatar_url() + ").";
+				const std::string username_avatar_formatted = "[Ver aquí](" + user.get_avatar_url() + ").";
 				const auto username_discriminator = "```" + std::to_string(user.discriminator) + "```";
 				const auto username_have_nitro_basic = user.has_nitro_basic();
 				const auto username_have_nitro_classic = user.has_nitro_classic();
@@ -199,7 +204,7 @@ int main() {
 				const dpp::guild& g = interaction.get_guild();
 
 				const std::string guild_owner_formatted = "<@" + std::to_string(g.owner_id) + ">";
-				const std::string guild_id = "```" + std::to_string(g.id) + " \n  ```";
+				const std::string guild_id = "```" + std::to_string(g.id) + "```";
 				const std::string guild_name = "```" + interaction.get_guild().name + "```";
 				const auto guild_description_formatted = "```" + g.description + "```";
 
@@ -230,18 +235,7 @@ int main() {
 					break;
 				}
 
-				if(!g.description.empty()) {
-
-					const dpp::embed embed_test = embed()
-						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-						.set_image(interaction.get_guild().get_banner_url())
-						.set_color(ec_default)
-						.add_field("<:owner:1129273470040158319> Propietario", guild_owner_formatted, true)
-						.add_field("<:publicguild:1129249322228264960> Nombre del servidor", guild_name, true)
-						.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, false)
-						.add_field("<:insights:1129270499378208768> Canales", total_guild_channels, true);
-						
-
+				if (!g.description.empty()) {
 					const dpp::embed embed_infoservidor = embed()
 						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 						.set_image(interaction.get_guild().get_banner_url())
@@ -254,12 +248,13 @@ int main() {
 						.add_field("<:insights:1129270499378208768> Emojis", total_guild_emojis, true)
 						.add_field("<:idlog:1129209889739251813> ID", guild_id, true)
 						.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, true)
-						.add_field("<:communityrules:1129286064549400647> Descripción", guild_description_formatted, false)
+						.add_field("", "", false)
+						.add_field("<:communityrules:1129286064549400647> Descripción", guild_description_formatted, true)
 						.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", guild_2fa_level, false);
 
-					event.reply(message(interaction.get_channel().id, embed_test));
-				} else {
+					event.reply(message(interaction.get_channel().id, embed_infoservidor));
 
+				} else {
 				const dpp::embed embed_infoservidor = embed()
 					.set_image(interaction.get_guild().get_banner_url())
 					.set_color(ec_default)
@@ -295,10 +290,12 @@ int main() {
 				event.reply(message(interaction.get_channel().id, embed_avatar));
 
 			}
-
-		  else if (interaction.get_command_name() == "report") {
+		  else if (interaction.get_command_name() == "ban") {
+			  dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+			}
+			else if (interaction.get_command_name() == "report") {
 				std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
-				std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || " + interaction.usr.username + "\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
+				std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || <@" + std::to_string(interaction.usr.id) + ">\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
 				
 				bytebot.direct_message_create(1068126654368583770, report_formatted);
 				event.reply("<:clydecheck:1129147137146503278> Mensaje enviado.");
@@ -306,7 +303,6 @@ int main() {
 				slashcmd_reg(interaction);
 				 bytebot.start_timer([=, &bytebot, &interaction](dpp::timer h) {
 					event.delete_original_response();
-					val = false;
 					bytebot.stop_timer(h);
 				}, 2);
 			}
@@ -332,8 +328,14 @@ int main() {
 				//########################################################################################################################
 				//########################################################################################################################
 
-				slashcommand report("report", "Envia un mensaje de error o queja de forma directa al desarrollador de ByteBot", bytebot.me.id);
-				report.add_option(command_option(co_string, "mensaje", "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibicìón", true));
+				slashcommand ban("ban", "Banea a un usuario del servidor", bytebot.me.id);
+				ban.add_option(command_option(co_user, "usuario", "Menciona al usuario a sancionar", true));
+
+				//########################################################################################################################
+				//########################################################################################################################
+
+				slashcommand report("report", description_slashcmd_report, bytebot.me.id);
+				report.add_option(command_option(co_string, "mensaje", option_usuario_slashcmd_report, true));
 
 				//########################################################################################################################
 
