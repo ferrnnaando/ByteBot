@@ -10,6 +10,7 @@ const string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
 const string banner_url = "https://i.imgur.com/QN4KH0H.png";
 const string logo_url = "https://i.imgur.com/pLxW45q.png";
 const string blacklisted_users[3] = { "", "921516505735262251", "3" };
+bool val = true;
 
 void slashcmd_reg(const dpp::interaction& interaction) {
 	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
@@ -34,6 +35,11 @@ int main() {
 		std::strftime(buffer_guild, sizeof(buffer_guild), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_guild);
 		std::string formatted_date_guild = "```" + std::string(buffer_guild) + "```";
 
+		auto cooldown_slashcmds = bytebot.start_timer([=, &interaction, &bytebot](dpp::timer h) {
+			event.delete_original_response();
+			bytebot.stop_timer(h);
+			}, 15);
+
 		if (event.command.usr.id == blacklisted_users[0] || event.command.usr.id == blacklisted_users[1]) {
 			const embed embed_blacklisted = embed()
 				.set_color(ec_error)
@@ -41,7 +47,7 @@ int main() {
 				.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de ByteBot en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
 				.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
 
-			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Alguien intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
+			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
 			event.reply(message(event.command.get_channel().id, embed_blacklisted).set_flags(m_ephemeral));
 
 		}
@@ -58,8 +64,13 @@ int main() {
 					.add_field("", "", false)
 					.add_field("Personalización", "```Haz que el servidor sea único y se adapte a tus necesidades mediante mi capacidad de configuración y personalización. Puedo ayudarte a establecer roles, permisos, canales y categorías de manera precisa y eficiente. \n ```", true) // Campo de Personalización
 					.add_field("Seguridad Avanzada", "```Protege tu servidor y tus datos con mi conjunto de funciones de seguridad avanzadas. Desde la verificación de dos factores (2FA) hasta la detección y filtrado de contenido no deseado, estoy aquí para garantizar un entorno seguro para todos los miembros.```", true); //a
+				
+				slashcmd_reg(interaction);
+				cooldown_slashcmds;
 				event.reply(message(interaction.get_channel().id, embed_bytebot).set_flags(m_ephemeral));
 
+				slashcmd_reg(interaction);
+				cooldown_slashcmds;
 			}
 			else if (interaction.get_command_name() == "commands") {
 				const embed embed_commands = embed()
@@ -67,9 +78,9 @@ int main() {
 					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 					.set_description("`/commands` | **¡Hola! Maybe you know me, maybe not. Anyway, Im here to help you making discord a chiller place. My commands are sub-divided into categories**");
 
+				slashcmd_reg(interaction);
+				cooldown_slashcmds;
 				event.reply(message(event.command.get_channel().id, embed_commands));
-				//event.reply(message(event.command.get_channel().id, embed_commands).set_reference(event.command.msg.id));
-				 
 
 			}
 			else if (interaction.get_command_name() == "infousuario") {
@@ -107,7 +118,6 @@ int main() {
 
 				}
 
-
 				switch (username_have_nitro_basic) {
 				case 0 || false:
 					have_nitro = "```No.```";
@@ -144,12 +154,10 @@ int main() {
 				}
 
 				std::time_t timestamp_user = user.get_creation_time();
-
 				std::tm* fecha_hora_user = std::gmtime(&timestamp_user);
 				char buffer_user[80];
 				std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
 				std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
-
 
 				if (user.is_bot()) {
 					const dpp::embed embed_infousuario = embed()
@@ -182,7 +190,7 @@ int main() {
 
 				}
 				slashcmd_reg(interaction);
-
+				cooldown_slashcmds;
 
 			}
 			else if (interaction.get_command_name() == "infoservidor") {
@@ -223,6 +231,17 @@ int main() {
 				}
 
 				if(!g.description.empty()) {
+
+					const dpp::embed embed_test = embed()
+						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+						.set_image(interaction.get_guild().get_banner_url())
+						.set_color(ec_default)
+						.add_field("<:owner:1129273470040158319> Propietario", guild_owner_formatted, true)
+						.add_field("<:publicguild:1129249322228264960> Nombre del servidor", guild_name, true)
+						.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, false)
+						.add_field("<:insights:1129270499378208768> Canales", total_guild_channels, true);
+						
+
 					const dpp::embed embed_infoservidor = embed()
 						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 						.set_image(interaction.get_guild().get_banner_url())
@@ -238,7 +257,7 @@ int main() {
 						.add_field("<:communityrules:1129286064549400647> Descripción", guild_description_formatted, false)
 						.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", guild_2fa_level, false);
 
-					event.reply(message(interaction.get_channel().id, embed_infoservidor));
+					event.reply(message(interaction.get_channel().id, embed_test));
 				} else {
 
 				const dpp::embed embed_infoservidor = embed()
@@ -257,8 +276,10 @@ int main() {
 					.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", guild_2fa_level, false);
 				
 				event.reply(message(interaction.get_channel().id, embed_infoservidor));
+
 				}
-				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
+				slashcmd_reg(interaction);
+				cooldown_slashcmds;
 
 		  }
 		  else if (interaction.get_command_name() == "avatar") {	
@@ -269,21 +290,25 @@ int main() {
 					.set_color(ec_default)
 					.set_image(avatar.get_avatar_url());
 
-				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
+				slashcmd_reg(interaction);
+				cooldown_slashcmds;
 				event.reply(message(interaction.get_channel().id, embed_avatar));
 
 			}
+
 		  else if (interaction.get_command_name() == "report") {
-			  std::string report_str = std::get <std::string>(event.get_parameter("mensaje"));
+				std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
+				std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || " + interaction.usr.username + "\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
+				
+				bytebot.direct_message_create(1068126654368583770, report_formatted);
+				event.reply("<:clydecheck:1129147137146503278> Mensaje enviado.");
 
-			  const dpp::embed embed_report = embed()
-				  .set_color(ec_error)
-				  .set_author(" ByteBot", discord_link_inv, "https://i.imgur.com/U95zuYh.png")
-				  .set_footer(embed_footer().set_text("Solicitado por " + interaction.usr.id + interaction.usr.discriminator));
-
-			  slashcmd_reg(interaction);
-			  bytebot.direct_message_create(1068126654368583770, report_str); //message(interaction.get_channel().id, embed_report))
-			  event.reply("<:clydecheck:1129147137146503278> | Mensaje enviado.");
+				slashcmd_reg(interaction);
+				 bytebot.start_timer([=, &bytebot, &interaction](dpp::timer h) {
+					event.delete_original_response();
+					val = false;
+					bytebot.stop_timer(h);
+				}, 2);
 			}
 		}
 		});
