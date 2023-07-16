@@ -30,11 +30,11 @@ int main() {
 							.set_id("md_btn_server"))
 						
 						.add_component(
-								component().set_label("<:guide:1129765954834939944> Invitame a tu servidor")
+								component().set_label("Invitame a tu servidor")
 								.set_type(cot_button)
 								.set_style(cos_link)
 								.set_url(discord_link_inv)
-								.set_emoji("<:guide:1129765954834939944>")
+								.set_emoji("🙌")
 								.set_id("md_btn_invite"))
 						/*.add_component(
 							component().set_label("dev.ferrnnaando")
@@ -58,7 +58,7 @@ int main() {
 			bytebot.start_timer([=, &bytebot](dpp::timer h) {
 				msg.reply("<:warningdisc:1129900021718982757> ¿Quieres ver todo lo que puedo hacer? Escribe **/**, elige alguno de mis comandos y deja que la magia fluya.");
 				bytebot.stop_timer(h);
-				}, 5);
+				}, 3);
 		}
 	});
 
@@ -451,19 +451,24 @@ int main() {
 			  if (!allowed_to_ban) {
 				  // const std::string default_message = "¡Oops! Parece que fuiste baneado, a continuación se te proporcionan algunos detalles.";
 				  dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
-				  std::string ban_motivo = std::get
-				  const auto member_who_banned = "<@" + std::to_string(interaction.usr.id) + ">";
+				 // std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));
+				  const std::string member_banned = "<@" + std::to_string(interaction.usr.id) + ">";
 
 				  const dpp::embed embed_baneado = dpp::embed()
 					  .set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 					  .set_description("Has sido baneado del servidor " + interaction.get_guild().name + ". A continuación se te proporcionan algunos detalles.")
 					  .set_color(ec_default)
-					  .add_field("<:discordstuff:1129970524903190659> Responsable", member_who_banned, true)
-					  .add_field("<:warningdisc:1129900021718982757> Motivo", "``` No especificado. ```", true);
+					  .add_field("<:discordstuff:1129970524903190659> Responsable", member_banned, true)
+					  .add_field("<:warningdisc:1129900021718982757> Motivo", "``` No especificado. ```", true)
+					  .set_footer(embed_footer().set_icon(interaction.usr.get_avatar_url()).set_text("Disclaimer: ByteBot no es responsable ni gestiona las sanciones que aplican los moderadores de servidores que usan ByteBot. Es de su responsabilidad informarse de la normativa vigente  de cada servidor para evitar futuras sanciones."));
 
 				  // bytebot.direct_message_create(usuario.id, default_message);
 				  bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed_baneado));
+				  std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Ha ejecutado /" << interaction.get_command_name() << " y ha baneado a " << member_banned << " en el servidor <@&" << interaction.guild_id << ">" << std::endl;
 				  event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
+			  }
+			  else if (allowed_to_ban) {
+				  event.reply("<:lock~1:1130126354512351424> | No tienes los permisos necesarios para ejecutar ese comando.");
 			  }
 
 			}
@@ -502,7 +507,7 @@ int main() {
 
 				//########################################################################################################################
 				//########################################################################################################################
-
+				
 				slashcommand ban("ban", "Banea a un usuario del servidor", bytebot.me.id);
 				ban.add_option(command_option(co_user, "usuario", description_slashcmd_ban, true));
 				ban.add_option(command_option(co_string, "motivo", "Especifica un motivo por el que banear al usuario.", false));
@@ -525,7 +530,7 @@ int main() {
 				bytebot.global_command_create(avatar);
 				
 
-				bytebot.global_command_create(ban);
+				bytebot.guild_command_create(ban, 1071475773808070776);
 				
 				//others
 				bytebot.global_command_create(report);
