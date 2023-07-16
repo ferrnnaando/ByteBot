@@ -30,11 +30,11 @@ int main() {
 							.set_id("md_btn_server"))
 						
 						.add_component(
-								component().set_label("Invitame a tu servidor")
+								component().set_label("<:guide:1129765954834939944> Invitame a tu servidor")
 								.set_type(cot_button)
 								.set_style(cos_link)
-								.set_url(bot_invite)
-								.set_emoji("🤖")
+								.set_url(discord_link_inv)
+								.set_emoji("<:guide:1129765954834939944>")
 								.set_id("md_btn_invite"))
 						/*.add_component(
 							component().set_label("dev.ferrnnaando")
@@ -47,6 +47,10 @@ int main() {
 						 
 					bytebot.stop_timer(h);
 					}, 1);
+			}
+
+			if (msg.msg.author.id != bytebot.me.id) {
+				std::cout << "[" + dpp::utility::current_date_time() + "] - " << msg.msg.author.username << " || Me ha enviado un DM. (Contenido: " << msg.msg.content << ")" << std::endl;
 			}
 		}
 		else if (msg.msg.content == "/") {
@@ -101,11 +105,9 @@ int main() {
 					.add_field("Seguridad Avanzada", "```Protege tu servidor y tus datos con mi conjunto de funciones de seguridad avanzadas. Desde la verificación de dos factores (2FA) hasta la detección y filtrado de contenido no deseado, estoy aquí para garantizar un entorno seguro para todos los miembros.```", true); //a
 				
 				slashcmd_reg(interaction);
-				cooldown_slashcmds;
+				//cooldown_slashcmds;
 				event.reply(message(interaction.get_channel().id, embed_bytebot).set_flags(m_ephemeral));
 
-				slashcmd_reg(interaction);
-				cooldown_slashcmds;
 			}
 			else if (interaction.get_command_name() == "commands") {
 				const embed embed_commands = embed()
@@ -114,7 +116,7 @@ int main() {
 					.set_description("`/commands` | **¡Hola! Maybe you know me, maybe not. Anyway, Im here to help you making discord a chiller place. My commands are sub-divided into categories**");
 
 				slashcmd_reg(interaction);
-				cooldown_slashcmds;
+				//cooldown_slashcmds;
 				event.reply(message(event.command.get_channel().id, embed_commands));
 
 			}
@@ -226,7 +228,7 @@ int main() {
 					}
 
 					slashcmd_reg(interaction);
-					cooldown_slashcmds;
+					//cooldown_slashcmds;
 				}
 				else {
 					dpp::user user = interaction.get_resolved_user(subcommand.get_value<snowflake>(0));
@@ -338,7 +340,7 @@ int main() {
 				}
 
 				slashcmd_reg(interaction);
-				cooldown_slashcmds;
+				//cooldown_slashcmds;
 
 			}
 			else if (interaction.get_command_name() == "infoservidor") {
@@ -417,7 +419,7 @@ int main() {
 
 				}
 				slashcmd_reg(interaction);
-				cooldown_slashcmds;
+				//cooldown_slashcmds;
 
 		  }
 			else if (interaction.get_command_name() == "avatar") {
@@ -441,10 +443,29 @@ int main() {
 
 				}
 				slashcmd_reg(interaction);
-				cooldown_slashcmds;
+				//cooldown_slashcmds;
 			}
 		  else if (interaction.get_command_name() == "ban") {
-			  dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+			
+			  bool allowed_to_ban = interaction.get_guild().owner_id == interaction.usr.id && dpp::find_role(interaction.guild_id)->has_ban_members();
+			  if (!allowed_to_ban) {
+				  // const std::string default_message = "¡Oops! Parece que fuiste baneado, a continuación se te proporcionan algunos detalles.";
+				  dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+				  std::string ban_motivo = std::get
+				  const auto member_who_banned = "<@" + std::to_string(interaction.usr.id) + ">";
+
+				  const dpp::embed embed_baneado = dpp::embed()
+					  .set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+					  .set_description("Has sido baneado del servidor " + interaction.get_guild().name + ". A continuación se te proporcionan algunos detalles.")
+					  .set_color(ec_default)
+					  .add_field("<:discordstuff:1129970524903190659> Responsable", member_who_banned, true)
+					  .add_field("<:warningdisc:1129900021718982757> Motivo", "``` No especificado. ```", true);
+
+				  // bytebot.direct_message_create(usuario.id, default_message);
+				  bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed_baneado));
+				  event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
+			  }
+
 			}
 			else if (interaction.get_command_name() == "report") {
 				std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
@@ -471,19 +492,20 @@ int main() {
 				
 				//########################################################################################################################
 
-				dpp::slashcommand infousuario("infousuario", "Muestra toda la información a mi disposición sobre un usuario.", bytebot.me.id);
-				infousuario.add_option(command_option(co_user, "usuario", "Usuario del que quieras saber mas.", false));
+				dpp::slashcommand infousuario("infousuario", description_slashcmd_infousuario, bytebot.me.id);
+				infousuario.add_option(command_option(co_user, "usuario", option_slashcmd_infousuario, false));
 
-				slashcommand infoservidor("infoservidor", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
+				slashcommand infoservidor("infoservidor", description_slashcmd_infoservidor, bytebot.me.id);
 
-				slashcommand avatar("avatar", "Muestra la foto de perfil de alguien.", bytebot.me.id);
-				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", false));
+				slashcommand avatar("avatar", option_usuario_slashcmd_avatar, bytebot.me.id);
+				avatar.add_option(command_option(co_user, "usuario", description_slashcmd_avatar, false));
 
 				//########################################################################################################################
 				//########################################################################################################################
 
 				slashcommand ban("ban", "Banea a un usuario del servidor", bytebot.me.id);
-				ban.add_option(command_option(co_user, "usuario", "Menciona al usuario a sancionar", true));
+				ban.add_option(command_option(co_user, "usuario", description_slashcmd_ban, true));
+				ban.add_option(command_option(co_string, "motivo", "Especifica un motivo por el que banear al usuario.", false));
 
 				//########################################################################################################################
 				//########################################################################################################################
