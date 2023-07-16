@@ -20,16 +20,25 @@ int main() {
 		if (msg.msg.is_dm()) {
 			if (msg.msg.author.id != bytebot.me.id && msg.msg.is_dm()) { //avoid loop for self-replying
 				bytebot.start_timer([=, &bytebot](dpp::timer h) {
-					msg.reply("<:guide:1129765954834939944> ¿Necesitas ayuda? Escríbeme en un servidor.");
+					msg.reply(message("<:guide:1129765954834939944> ¿Necesitas ayuda? Escríbeme mediante un servidor y estaré encantado de ayudarte.").add_component(
+						component().add_component(
+							component().set_label("Servidor de soporte")
+							.set_type(cot_button)
+							.set_style(cos_danger)
+							//.set_emoji(u8"😄")
+							.set_id("md_btn")
+						)));
+						 
 					bytebot.stop_timer(h);
 					}, 1);
 			}
 		}
 		else if (msg.msg.content == "/") {
+
 			bytebot.start_timer([=, &bytebot](dpp::timer h) {
 				msg.reply("<:warningdisc:1129900021718982757> ¿Quieres ver todo lo que puedo hacer? Escribe **/**, elige alguno de mis comandos y deja que la magia fluya.");
 				bytebot.stop_timer(h);
-				}, 1);
+				}, 5);
 		}
 	});
 
@@ -395,18 +404,28 @@ int main() {
 				cooldown_slashcmds;
 
 		  }
-		  else if (interaction.get_command_name() == "avatar") {	
-				dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+			else if (interaction.get_command_name() == "avatar") {
 
-				const embed embed_avatar = embed()
-					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-					.set_color(ec_default)
-					.set_image(avatar.get_avatar_url(900));
+				if (subcommand.options.empty()) {
+					const embed embed_avatar = embed()
+						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+						.set_color(ec_default)
+						.set_image(interaction.usr.get_avatar_url(1024));
 
+					event.reply(message(interaction.get_channel().id, embed_avatar));
+				}
+				else {
+					dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+					const embed embed_avatar = embed()
+						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+						.set_color(ec_default)
+						.set_image(avatar.get_avatar_url(1024));
+
+					event.reply(message(interaction.get_channel().id, embed_avatar));
+
+				}
 				slashcmd_reg(interaction);
 				cooldown_slashcmds;
-				event.reply(message(interaction.get_channel().id, embed_avatar));
-
 			}
 		  else if (interaction.get_command_name() == "ban") {
 			  dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
@@ -442,7 +461,7 @@ int main() {
 				slashcommand infoservidor("infoservidor", "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando", bytebot.me.id);
 
 				slashcommand avatar("avatar", "Muestra la foto de perfil de alguien.", bytebot.me.id);
-				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", true));
+				avatar.add_option(command_option(co_user, "usuario", "Usuario del que mostrar su foto de perfil.", false));
 
 				//########################################################################################################################
 				//########################################################################################################################
@@ -466,6 +485,9 @@ int main() {
 				bytebot.global_command_create(infousuario);
 				bytebot.global_command_create(infoservidor);
 				bytebot.global_command_create(avatar);
+				
+
+				bytebot.global_command_create(ban);
 				
 				//others
 				bytebot.global_command_create(report);
