@@ -9,7 +9,7 @@ void slashcmd_reg(const dpp::interaction& interaction) {
 int main() {
 	//Create bot cluster
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
-	dpp::webhook bytebot_wh("https://discord.com/api/webhooks/1129797836255547443/NJimRvFP1yjR5HKbAkczyA07QBcQP-6zEKmen-PimQtyCPQo2rmjrFujrLfjNJ7Gz9sf");
+	dpp::webhook bytebot_wh(reports_webhook);
 
 	//Output log information
 	bytebot.get_gateway_bot_sync();
@@ -24,10 +24,26 @@ int main() {
 						component().add_component(
 							component().set_label("Servidor de soporte")
 							.set_type(cot_button)
-							.set_style(cos_danger)
-							//.set_emoji(u8"😄")
-							.set_id("md_btn")
-						)));
+							.set_style(cos_link)
+							.set_url(discord_link_inv)
+							.set_emoji("🙌")
+							.set_id("md_btn_server"))
+						
+						.add_component(
+								component().set_label("Invitame a tu servidor")
+								.set_type(cot_button)
+								.set_style(cos_link)
+								.set_url(bot_invite)
+								.set_emoji("🤖")
+								.set_id("md_btn_invite"))
+						/*.add_component(
+							component().set_label("dev.ferrnnaando")
+							.set_type(cot_button)
+							.set_style(cos_success)
+							.set_disabled(true)
+							.set_id("md_btn_dev"))*/
+						
+						));
 						 
 					bytebot.stop_timer(h);
 					}, 1);
