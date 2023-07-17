@@ -8,9 +8,12 @@ const std::string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
 const std::string banner_url = "https://i.imgur.com/QN4KH0H.png";
 const std::string logo_url = "https://i.imgur.com/pLxW45q.png";
 const std::string blacklisted_users[3] = { "", "921516505735262251", "3" };
-const std::string blacklisted_servers[1] = { "921516505735262"};
+const std::string blacklisted_servers[1] = { "1130583864818016278"};
+const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
+
 //###########################################################################################################################################################################
-const std::string option_usuario_slashcmd_report = "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibic祗n";
+
+const std::string option_usuario_slashcmd_report = "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibic矛贸n";
 const std::string description_slashcmd_report = "Envia un mensaje de error o queja de forma directa al desarrollador de ByteBot";
 
 const std::string description_slashcmd_ban = "Banea a un usuario del servidor";
@@ -19,7 +22,7 @@ const std::string option_usuario_slashcmd_ban = "Banea a un usuario del servidor
 const std::string description_slashcmd_avatar = "Usuario del que mostrar su foto de perfil.";
 const std::string option_usuario_slashcmd_avatar = "Muestra la foto de perfil de alguien.";
 
-const std::string description_slashcmd_infousuario = "Muestra toda la informaci髇 a mi disposici髇 sobre un usuario.";
+const std::string description_slashcmd_infousuario = "Muestra toda la informaci贸n a mi disposici贸n sobre un usuario.";
 const std::string option_slashcmd_infousuario = "Usuario del que quieras saber mas.";
 
-const std::string description_slashcmd_infoservidor = "Muestra toda la informaci髇 a mi disposici髇 sobre el servidor en el que se ejecuta el comando";
+const std::string description_slashcmd_infoservidor = "Muestra toda la informaci贸n a mi disposici贸n sobre el servidor en el que se ejecuta el comando";
