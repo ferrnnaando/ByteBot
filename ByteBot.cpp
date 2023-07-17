@@ -1,6 +1,5 @@
-#include "header.h"
-#include "variables.cpp"
-#include "functions.cpp"
+#include "headers/mainheader.h"
+#include "variables/variables.cpp"
 
 void slashcmd_reg(const dpp::interaction& interaction) {
 	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
@@ -10,6 +9,7 @@ int main() {
 	//Create bot cluster
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
+
 
 	//Output log information
 	bytebot.get_gateway_bot_sync();
@@ -446,7 +446,7 @@ int main() {
 				if (ban_perm.has(dpp::p_ban_members) || ban_perm.has(dpp::p_administrator)) {
 					dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
 
-					const std::string member_staff = "<@" + std::to_string(interaction.usr.id) + ">";
+					static const std::string member_staff = "<@" + std::to_string(interaction.usr.id) + ">";
 
 					if (std::to_string(usuario.id) == "1126691771506757713") {
 						const char* text =
@@ -470,8 +470,7 @@ int main() {
 
 						));
 					}
-					else {
-						void ban_user(const dpp::interaction_create_t &interaction){
+						 
 							// std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));
 							const dpp::embed embed_baneado = dpp::embed()
 								.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
@@ -502,8 +501,8 @@ int main() {
 
 							std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Ha ejecutado /" << interaction.get_command_name() << " y ha baneado a " << member_staff << " en el servidor <@&" << interaction.guild_id << ">" << std::endl;
 							event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
-						}
-					}
+						
+					
 				}
 				else {
 					event.reply(message(interaction.channel_id, "<:lock23:1130126354512351424> | No tienes los permisos necesarios para ejecutar ese comando.").set_flags(dpp::m_ephemeral));
@@ -521,7 +520,9 @@ int main() {
 			}
 		});
 
+
 		bytebot.on_button_click([&bytebot](const dpp::button_click_t event) {
+			
 			if (event.custom_id == "contribute_ban_bot_id") {
 				event.reply(message(event.command.channel_id, "<:addloader:1130231705794519091> ¡Gracias! No te arrepentirás de seguir un proceso tan simple y que ayuda tanto. Reporta tu error con el comando `/report` enviandolo de forma directa a los desarrolladores de ByteBot o reportalo personalmente en nuestro servidor de Discord y obtén una insignia única.").set_flags(dpp::m_ephemeral).add_component(
 				dpp::component().add_component(
@@ -534,12 +535,18 @@ int main() {
 			    ));
 			}
 			else if (event.custom_id == "continue_ban_bot_id") {
-				event.reply("no hecho bro");
+		
 			}
 		});
 
 		//Register slash commands
 		bytebot.on_ready([&bytebot](const ready_t& event) {
+			//if (bytebot.me.id == event.from->get_guild_count());
+			dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
+			if (g) {
+				bytebot.current_user_leave_guild(blacklisted_servers[0]);
+			}
+
 			bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status
 
 			if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
@@ -573,18 +580,7 @@ int main() {
 				bytebot.global_command_create(slashcommand("commands", "Muestra de lo que soy capaz", bytebot.me.id));
 				bytebot.global_command_create(slashcommand("bytebot", "Comando principal de ByteBot el cual te dirá que hacer conmigo", bytebot.me.id));
 
-				//utilitties (just will be displayed for oneself)
-				bytebot.global_command_create(infousuario);
-				bytebot.global_command_create(infoservidor);
-				bytebot.global_command_create(avatar);
-				
-
-				bytebot.global_command_create(ban);
-				
-				//others
-				bytebot.global_command_create(report);
-				
-
+				bytebot.global_bulk_command_create({ infousuario, infoservidor, avatar, ban , report});
 
 			}
 		});
