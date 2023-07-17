@@ -72,12 +72,11 @@ int main() {
 		dpp::command_interaction cmd_data = interaction.get_command_interaction();
 		auto subcommand = cmd_data;
 
-		const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
 		const std::string owner_guild_id = std::to_string(interaction.get_guild().owner_id);
 		const std::string guild_name = interaction.get_guild().name;
 		const std::string formated_bytebot_moderator = "<@" + std::to_string(bytebot.me.id) + ">";
 
-		if (g) {
+		/*if (g) {
 			if (interaction.usr.id == owner_guild_id) {
 
 				event.reply(message(interaction.channel_id, "<:warningdisc:1129900021718982757> ¡Vaya! No puedes usar mis comandos porque estoy listo para marcharme de este servidor, te he enviado un mensaje privado explicando el motivo. ¡Suerte!").set_flags(dpp::m_ephemeral));
@@ -142,7 +141,7 @@ int main() {
 					)
 				));
 			}
-		}
+		}*/
 
 		std::time_t timestamp_guild = interaction.get_guild().get_creation_time();
 		std::tm* fecha_hora_guild = std::gmtime(&timestamp_guild);
