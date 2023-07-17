@@ -1,5 +1,8 @@
 #include "headers/mainheader.h"
 #include "variables/variables.cpp"
+#include "embeds/embeds.cpp"
+
+bool can_ban_bytebot = false;
 
 void slashcmd_reg(const dpp::interaction& interaction) {
 	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
@@ -73,6 +76,79 @@ int main() {
 		char buffer_guild[80];
 		std::strftime(buffer_guild, sizeof(buffer_guild), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_guild);
 		std::string formatted_date_guild = "```" + std::string(buffer_guild) + "```";
+
+		const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
+		const std::string owner_guild_id = std::to_string(interaction.get_guild().owner_id);
+		const std::string guild_name = interaction.get_guild().name;
+		const std::string formated_bytebot_moderator = "<@" + std::to_string(bytebot.me.id) + ">";
+
+		if (g) {
+		if (interaction.usr.id == owner_guild_id) {
+			
+				event.reply(message(interaction.channel_id, "<:warningdisc:1129900021718982757> ¡Vaya! No puedes usar mis comandos porque estoy listo para marcharme de este servidor, te he enviado un mensaje privado explicando el motivo. ¡Suerte!").set_flags(dpp::m_ephemeral));
+				const dpp::embed embed_blacklistguild = dpp::embed()
+					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+					.set_description("Me he marchado del servidor `" + guild_name + "`. A continuación se te proporcionan algunos detalles.")
+					.set_color(ec_default)
+					.add_field("<:discordstuff:1129970524903190659> Responsable", formated_bytebot_moderator, true)
+					.add_field("<:warningdisc:1129900021718982757> Motivo", "```Tu servidor está marcado en la lista negra de servidores por los desarrolladores de ByteBot. ```", true)
+					.set_footer(embed_footer().set_icon(interaction.usr.get_avatar_url()).set_text("Advertencia: Puedes apelar esta decisión en el servidor oficial de ByteBot."));
+
+
+				bytebot.direct_message_create(owner_guild_id, message(interaction.get_channel().is_dm(), embed_blacklistguild).add_component(
+					dpp::component().add_component(
+						dpp::component().set_label("Servidor de soporte")
+						.set_style(cos_link)
+						.set_url(discord_link_inv)
+						.set_type(cot_button)
+						.set_emoji("🙌")
+					)
+
+					.add_component(
+						dpp::component().set_label("¡Invitame a tu servidor!")
+						.set_style(cos_link)
+						.set_url(bot_invite)
+						.set_type(cot_button)
+						.set_emoji("🤖")
+					)
+				));
+
+	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Ha intentado ejecutar un comando en el servidor <@&" << interaction.guild_id << "> pero está este último está marcado en la lista negra, abandonando servidor." << std::endl;
+				
+				bytebot.current_user_leave_guild(blacklisted_servers[0]);
+			}
+		else if (interaction.usr.id != interaction.get_guild().owner_id) {
+			event.reply(message(interaction.channel_id, "<:warningdisc:1129900021718982757> ¡Vaya! No puedes usar mis comandos porque estoy listo para marcharme de este servidor. Le he enviado un mensaje privado al dueño del servidor explicando el motivo de esta acción. Habla con él para conocer los detalles ya que, por motivos de privacidad yo no puedo hacerlo directamente. ¡Suerte!").set_flags(dpp::m_ephemeral));
+
+			const dpp::embed embed_blacklistguild = dpp::embed()
+				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+				.set_description("Me he marchado del servidor `" + guild_name + "`. A continuación se te proporcionan algunos detalles.")
+				.set_color(ec_default)
+				.add_field("<:discordstuff:1129970524903190659> Responsable", formated_bytebot_moderator, true)
+				.add_field("<:warningdisc:1129900021718982757> Motivo", "```Tu servidor está marcado en la lista negra de servidores por los desarrolladores de ByteBot. ```", true)
+				.set_footer(embed_footer().set_icon(interaction.usr.get_avatar_url()).set_text("Advertencia: Puedes apelar esta decisión en el servidor oficial de ByteBot."));
+
+
+			bytebot.direct_message_create(owner_guild_id, message(interaction.get_channel().is_dm(), embed_blacklistguild).add_component(
+				dpp::component().add_component(
+					dpp::component().set_label("Servidor de soporte")
+					.set_style(cos_link)
+					.set_url(discord_link_inv)
+					.set_type(cot_button)
+					.set_emoji("🙌")
+				)
+
+				.add_component(
+					dpp::component().set_label("¡Invitame a tu servidor!")
+					.set_style(cos_link)
+					.set_url(bot_invite)
+					.set_type(cot_button)
+					.set_emoji("🤖")
+				)
+			));
+		}
+		}
+		
 
 		if (interaction.usr.id == blacklisted_users[0] || interaction.usr.id == blacklisted_users[1]) {
 			const embed embed_blacklisted = embed()
@@ -394,23 +470,24 @@ int main() {
 
 					event.reply(message(interaction.get_channel().id, embed_infoservidor));
 
-				} else {
-				const dpp::embed embed_infoservidor = embed()
-					.set_image(interaction.get_guild().get_banner_url())
-					.set_color(ec_default)
-					.add_field("<:owner:1129273470040158319> Propietario", guild_owner_formatted, true)
-					.add_field("<:publicguild:1129249322228264960> Nombre del servidor", guild_name, true)
-					.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, true)
+				}
+				else {
+					const dpp::embed embed_infoservidor = embed()
+						.set_image(interaction.get_guild().get_banner_url())
+						.set_color(ec_default)
+						.add_field("<:owner:1129273470040158319> Propietario", guild_owner_formatted, true)
+						.add_field("<:publicguild:1129249322228264960> Nombre del servidor", guild_name, true)
+						.add_field("<:partnered2:1129275181559451658> Partner", partnered_guild_str, true)
 
-					//.add_field("<:publicguild:1129249322228264960> Canales", "`" + std::to_string(get_channel_count())  + "`, <#" + std::to_string(text) + ">", true);
-					.add_field("<:insights:1129270499378208768> Canales", total_guild_channels, true)
-					.add_field("<:insights:1129270499378208768> Roles", total_guild_roles, true)
-					.add_field("<:insights:1129270499378208768> Emojis", total_guild_emojis, true)
-					.add_field("<:idlog:1129209889739251813> ID", guild_id, false)
-					.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false)
-					.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", guild_2fa_level, false);
-				
-				event.reply(message(interaction.get_channel().id, embed_infoservidor));
+						//.add_field("<:publicguild:1129249322228264960> Canales", "`" + std::to_string(get_channel_count())  + "`, <#" + std::to_string(text) + ">", true);
+						.add_field("<:insights:1129270499378208768> Canales", total_guild_channels, true)
+						.add_field("<:insights:1129270499378208768> Roles", total_guild_roles, true)
+						.add_field("<:insights:1129270499378208768> Emojis", total_guild_emojis, true)
+						.add_field("<:idlog:1129209889739251813> ID", guild_id, false)
+						.add_field("<:devbadge:1129269023784308738> Se creó el", formatted_date_guild, false)
+						.add_field("<:moderatorbadge:1129286080294813839> Nivel de seguridad", guild_2fa_level, false);
+
+					event.reply(message(interaction.get_channel().id, embed_infoservidor));
 
 				}
 				slashcmd_reg(interaction);
@@ -471,7 +548,7 @@ int main() {
 						));
 					}
 						 
-							// std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));
+							// std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));	
 							const dpp::embed embed_baneado = dpp::embed()
 								.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 								.set_description("Has sido baneado del servidor " + interaction.get_guild().name + ". A continuación se te proporcionan algunos detalles.")
@@ -535,17 +612,15 @@ int main() {
 			    ));
 			}
 			else if (event.custom_id == "continue_ban_bot_id") {
-		
+				can_ban_bytebot = true;
+				event.reply(message(event.command.channel_id, "<:warningdisc:1129900021718982757> Está bien... Si así lo deseas, vuelve a ejecutar el comando para banearme.").set_flags(dpp::m_ephemeral));
 			}
 		});
 
 		//Register slash commands
 		bytebot.on_ready([&bytebot](const ready_t& event) {
 			//if (bytebot.me.id == event.from->get_guild_count());
-			dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
-			if (g) {
-				bytebot.current_user_leave_guild(blacklisted_servers[0]);
-			}
+			
 
 			bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status
 
