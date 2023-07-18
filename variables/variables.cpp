@@ -11,6 +11,10 @@ const std::string blacklisted_users[3] = { "", "921516505735262251", "3" };
 const std::string blacklisted_servers[1] = { "1130583864818016278"};
 const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
 
+enum flags {
+	ephemeral = dpp::m_ephemeral
+};
+
 //###########################################################################################################################################################################
 
 const std::string option_usuario_slashcmd_report = "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibicìón";
