@@ -1,25 +1,24 @@
 #include "headers/mainheader.h"
-#include "register/slashcommands.cpp"
-
-void slashcmd_reg(const dpp::interaction& interaction) {
-	std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Slashcommand /" << interaction.get_command_name() << " ejecutado." << std::endl;
-} 
+#include "register/slashcommands/slashcommand_on_ready/slashcommands.h"
+#include "register/slashcommands/slashcommand_logger/logger.h"
 
 int main() {
 	//Create bot cluster
-	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
+	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_presences | dpp::i_privileged_intents || dpp::i_all_intents);
 	dpp::webhook bytebot_wh(reports_webhook);
-
-
+	
 	//Output log information
 	bytebot.on_log(utility::cout_logger());
 
-	on_ready(bytebot);
-
+	 bytebot.on_ready([&bytebot](const ready_t& event) {
+		 ready_handler(bytebot);
+	});
+		
 	//Handleer for messages events
 	bytebot.on_message_create([&bytebot](const dpp::message_create_t& msg) {
 		if (msg.msg.is_dm()) {
 			if (msg.msg.author.id != bytebot.me.id && msg.msg.is_dm()) { //avoid loop for self-replying
+				
 				bytebot.start_timer([=, &bytebot](dpp::timer h) {
 					msg.reply(message("<:guide:1129765954834939944> ¿Necesitas ayuda? Escríbeme mediante un servidor y estaré encantado de ayudarte.").set_flags(dpp::m_loading).add_component(
 						component().add_component(
@@ -149,11 +148,11 @@ int main() {
 					.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
 
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
-				event.reply(message(event.command.get_channel().id, embed_blacklisted).set_flags(m_ephemeral));
+				event.reply(message(event.command.get_channel().id, embed_blacklisted).set_flags(ephemeral));
 
 			}
 			else {
-				if (interaction.get_command_name() == "bytebot") {
+				if (interaction.get_command_name() == "informacion") {
 					const dpp::embed embed_bytebot = embed()
 						.set_color(ec_default)
 						//.set_image(banner_url)
@@ -171,7 +170,7 @@ int main() {
 					event.reply(message(interaction.get_channel().id, embed_bytebot).set_flags(ephemeral));
 
 				}
-				else if (interaction.get_command_name() == "commands") {
+				else if (interaction.get_command_name() == "comandos") {
 					const embed embed_commands = embed()
 						.set_color(ec_default)
 						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
@@ -508,7 +507,7 @@ int main() {
 					slashcmd_reg(interaction);
 					//cooldown_slashcmds;
 				}
-				else if (interaction.get_command_name() == "ban") {
+				else if (interaction.get_command_name() == "banear") {
 					dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
 
 					if (ban_perm.has(dpp::p_ban_members) || ban_perm.has(dpp::p_administrator)) {
@@ -539,7 +538,7 @@ int main() {
 						if (ban_issue.empty() || subcommand.options.empty()) {
 							const dpp::embed embed_baneado = dpp::embed()
 								.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-								.set_description("Has sido baneado del servidor " + interaction.get_guild().name + ". A continuación se te proporcionan algunos detalles.")
+								.set_description("Has sido baneado del servidor `" + interaction.get_guild().name + "`. A continuación se te proporcionan algunos detalles.")
 								.set_color(ec_default)
 								.add_field("<:discordstuff:1129970524903190659> Responsable", member_staff, true)
 								.add_field("<:warningdisc:1129900021718982757> Motivo", "``` No especificado. ```", true)
@@ -569,7 +568,7 @@ int main() {
 						else if (!ban_issue.empty()) {
 							const dpp::embed embed_baneado = dpp::embed()
 								.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-								.set_description("Has sido baneado del servidor " + interaction.get_guild().name + ". A continuación se te proporcionan algunos detalles.")
+								.set_description("Has sido baneado del servidor `" + interaction.get_guild().name + "`. A continuación se te proporcionan algunos detalles.")
 								.set_color(ec_default)
 								.add_field("<:discordstuff:1129970524903190659> Responsable", member_staff, true)
 								.add_field("<:warningdisc:1129900021718982757> Motivo", ban_issue, true)
@@ -601,7 +600,7 @@ int main() {
 						event.reply(message(interaction.channel_id, "<:lock23:1130126354512351424> | No tienes los permisos necesarios para ejecutar ese comando.").set_flags(dpp::m_ephemeral));
 					}
 				}
-				else if (interaction.get_command_name() == "report") {
+				else if (interaction.get_command_name() == "reportar") {
 					std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
 					std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || <@" + std::to_string(interaction.usr.id) + ">\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
 
