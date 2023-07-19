@@ -1,4 +1,5 @@
-#include "../headers/mainheader.h"
+#include <string>
+#include "dpp/dpp.h"
 
 const uint64_t ec_default = dpp::colors::pink;
 const uint64_t ec_error = dpp::colors::red_blood; //embed color
@@ -9,7 +10,7 @@ const std::string banner_url = "https://i.imgur.com/QN4KH0H.png";
 const std::string logo_url = "https://i.imgur.com/pLxW45q.png";
 const std::string blacklisted_users[3] = { "", "921516505735262251", "3" };
 const std::string blacklisted_servers[1] = { "1130583864818016278"};
-const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
+//const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
 
 enum flags {
 	ephemeral = dpp::m_ephemeral
