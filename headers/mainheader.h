@@ -13,4 +13,4 @@
 using namespace std;
 using namespace dpp;
 
-const std::string BOT_TOKEN = 
+const std::string BOT_TOKEN = "tset";
