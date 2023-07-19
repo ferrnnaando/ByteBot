@@ -1,4 +1,4 @@
 #pragma once
 #include "../../../headers/mainheader.h"
 
-void ready_handler(dpp::cluster &bytebot);
+void on_ready(dpp::cluster &bytebot);
