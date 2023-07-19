@@ -1,10 +1,12 @@
 #include "headers/mainheader.h"
+
 #include "register/slashcommands/slashcommand_on_ready/slashcommands.h"
 #include "register/slashcommands/slashcommand_logger/logger.h"
+#include "register/embeds/embed_declarations.h"
 
 int main() {
 	//Create bot cluster
-	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content | dpp::i_guild_presences | dpp::i_privileged_intents || dpp::i_all_intents);
+	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
 	
 	//Output log information
@@ -141,14 +143,10 @@ int main() {
 			std::string formatted_date_guild = "```" + std::string(buffer_guild) + "```";
 
 			if (interaction.usr.id == blacklisted_users[0] || interaction.usr.id == blacklisted_users[1]) {
-				const embed embed_blacklisted = embed()
-					.set_color(ec_error)
-					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-					.set_description("Puedes apelar la sancion en el servidor de Discord oficial [haciendo click aqui](https://discord.gg/bYDhwFFVk5).\n \nNo es seguro que puedas volver a usar el bot, pero tienes la oportunidad de apelar; Motivos por los que tu cuenta puede resultar en una prohibicion del uso de ByteBot:\n \n> Automatizacion de los comandos de ByteBot en servidores via self-bots u otros.\n \n> Uso del bot con fines maliciosos, estafas, phising, mensajes de estafas, etc.\n \n> Presencia del bot en servidores con fines maliciosos.\n \n> Otros motivos. \n ")
-					.set_title("Tienes una prohibicion permanente del uso de ByteBot.");
-
+				
+				
 				std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
-				event.reply(message(event.command.get_channel().id, embed_blacklisted).set_flags(ephemeral));
+				event.reply(message(event.command.get_channel().id, blacklist_embed(interaction)).set_flags(ephemeral));
 
 			}
 			else {
@@ -183,91 +181,7 @@ int main() {
 				}
 				else if (interaction.get_command_name() == "infousuario") {
 					if (subcommand.options.empty()) {
-						const auto username = "```" + interaction.usr.username + "```";
-						const std::string username_avatar_formatted = "[Ver aquí](" + interaction.usr.get_avatar_url() + ").";
-						const auto username_discriminator = "```" + std::to_string(interaction.usr.discriminator) + "```";
-						const auto username_have_nitro_basic = interaction.usr.has_nitro_basic();
-						const auto username_have_nitro_classic = interaction.usr.has_nitro_classic();
-						const auto username_have_nitro_full = interaction.usr.has_nitro_full();
-						const auto is_bot_verified = interaction.usr.is_verified_bot();
-						const auto is_house_brilliance = interaction.usr.is_house_brilliance();
-						const auto is_house_bravery = interaction.usr.is_house_bravery();
-						const auto is_house_balance = interaction.usr.is_house_balance();
-						const auto is_early_supporter = interaction.usr.is_early_supporter();
-
-						const std::string user_id_formatted = "```" + std::to_string(interaction.usr.id) + "```";
-
-						std::string have_nitro, is_bot_verified_str, hypesquad_str;
-
-						if (is_house_balance) {
-							hypesquad_str = "```Sí. (House Balance)```";
-
-						}
-						else if (is_house_bravery) {
-							hypesquad_str = "```Sí. (House Bravery)```";
-
-						}
-						else if (is_house_brilliance) {
-							hypesquad_str = "```Sí. (House Brilliance)```";
-
-						}
-						else {
-							hypesquad_str = "```No.```";
-
-						}
-
-						switch (username_have_nitro_basic) {
-						case 0 || false:
-							have_nitro = "```No.```";
-							if (username_have_nitro_classic) {
-								have_nitro = "```Tiene nitro classic.```";
-
-							}
-							else if (username_have_nitro_full) {
-								have_nitro = "```Tiene nitro full.```";
-							}
-
-							break;
-						case 1 || true:
-							have_nitro = "```Sí.```";
-							if (username_have_nitro_classic) {
-								have_nitro = "```Tiene nitro classic.```";
-
-							}
-							else if (username_have_nitro_full) {
-								have_nitro = "```Tiene nitro full.```";
-							}
-							break;
-						}
-
-						switch (is_bot_verified) {
-						case 0 || false:
-							is_bot_verified_str = "```No.```";
-							break;
-
-						case 1 || true:
-							is_bot_verified_str = "```Sí.```";
-							break;
-
-						}
-
-						std::time_t timestamp_user = interaction.usr.get_creation_time();
-						std::tm* fecha_hora_user = std::gmtime(&timestamp_user);
-						char buffer_user[80];
-						std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
-						std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
-
-						if (interaction.usr.is_bot()) {
-							const dpp::embed embed_infousuario = embed()
-								.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-								.set_color(ec_default)
-								.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-								.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-								.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
-								.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-								.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-								.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-								.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
+						
 
 							event.reply(message(interaction.get_channel().id, embed_infousuario));
 
