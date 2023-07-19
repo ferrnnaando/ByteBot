@@ -5,6 +5,8 @@
 #include "register/embeds/embed_declarations.h"
 
 int main() {
+	dotenv::init();
+	const std::string BOT_TOKEN{std::getenv("token")};
 	//Create bot cluster
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);

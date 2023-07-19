@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\include\dpp-10.0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\include\dpp-10.0;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\dotenv_library\include\laserpants\dotenv;$(IncludePath)</IncludePath>
     <LibraryPath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\lib\dpp-10.0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\include\dpp-10.0;$(IncludePath)</IncludePath>
+    <IncludePath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\include\dpp-10.0;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\dotenv_library\include\laserpants\dotenv;$(IncludePath)</IncludePath>
     <LibraryPath>D:\ferrnnaando\C++\2023\ByteBot\libdpp-10.0.24-win64\lib\dpp-10.0;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -140,14 +140,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ByteBot.cpp" />
+    <ClCompile Include="register\embeds\embed_declarations.cpp" />
+    <ClCompile Include="register\slashcommands\slashcommand_logger\slashcommand_logger.cpp" />
+    <ClCompile Include="register\slashcommands\slashcommand_on_ready\slashcommands.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h" />
+    <ClInclude Include="headers\mainheader.h" />
+    <ClInclude Include="register\embeds\embed_declarations.h" />
+    <ClInclude Include="register\slashcommands\slashcommand_on_ready\slashcommands.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libdpp-10.0.24-win64\lib\dpp-10.0\dpp.lib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".env" />
+    <None Include=".gitignore" />
     <None Include="libdpp-10.0.24-win64\bin\dpp.dll" />
     <None Include="libdpp-10.0.24-win64\bin\zlib1.dll" />
   </ItemGroup>

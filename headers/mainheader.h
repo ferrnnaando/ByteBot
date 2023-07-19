@@ -7,10 +7,10 @@
 #include <time.h>
 #include <iomanip>
 #include <chrono>
+#include <dotenv.h>
 
 #include "../variables/variables.cpp"
 
 using namespace std;
 using namespace dpp;
 
-const std::string BOT_TOKEN = "tset";

@@ -13,14 +13,35 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de origen\NewFilter1">
+      <UniqueIdentifier>{e2cb629e-8ff2-49d8-ba1c-1de09593c9b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ByteBot.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="register\slashcommands\slashcommand_on_ready\slashcommands.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="register\slashcommands\slashcommand_logger\slashcommand_logger.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="register\embeds\embed_declarations.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\mainheader.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="register\slashcommands\slashcommand_on_ready\slashcommands.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="register\embeds\embed_declarations.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>
@@ -34,6 +55,12 @@
       <Filter>Archivos de origen</Filter>
     </None>
     <None Include="libdpp-10.0.24-win64\bin\zlib1.dll">
+      <Filter>Archivos de origen</Filter>
+    </None>
+    <None Include=".gitignore">
+      <Filter>Archivos de origen</Filter>
+    </None>
+    <None Include=".env">
       <Filter>Archivos de origen</Filter>
     </None>
   </ItemGroup>
