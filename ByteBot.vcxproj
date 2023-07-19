@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="ByteBot.cpp" />
     <ClCompile Include="register\embeds\embed_declarations.cpp" />
+    <ClCompile Include="register\on_messages\on_messages.cpp" />
     <ClCompile Include="register\slashcommands\slashcommand_logger\slashcommand_logger.cpp" />
     <ClCompile Include="register\slashcommands\slashcommand_on_ready\slashcommands.cpp" />
   </ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="header.h" />
     <ClInclude Include="headers\mainheader.h" />
     <ClInclude Include="register\embeds\embed_declarations.h" />
+    <ClInclude Include="register\on_messages\on_messages.h" />
     <ClInclude Include="register\slashcommands\slashcommand_on_ready\slashcommands.h" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".env" />
+    <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="libdpp-10.0.24-win64\bin\dpp.dll" />
     <None Include="libdpp-10.0.24-win64\bin\zlib1.dll" />
