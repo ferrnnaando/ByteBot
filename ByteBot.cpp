@@ -8,23 +8,19 @@
 int main() {
 	dotenv::init();
 	const std::string BOT_TOKEN{std::getenv("token")};
-	//Create bot cluster
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
 	
-	//Output log information
 	bytebot.on_log(utility::cout_logger());
 
 	 bytebot.on_ready([&bytebot](const ready_t& event) {
-		 ready_handler(bytebot);
+		 on_ready(bytebot);
 	});
 		
-	//Handleer for messages events
 	bytebot.on_message_create([&bytebot](const dpp::message_create_t& msg) {
 		on_message_create(msg, bytebot);
 	});
 
-	//Handler for slash commands
 	bytebot.on_slashcommand([&bytebot, &bytebot_wh](const slashcommand_t& event) { //DO find arrays with find and end.
 			dpp::interaction interaction = event.command;
 			dpp::command_interaction cmd_data = interaction.get_command_interaction();
