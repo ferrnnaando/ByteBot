@@ -1,7 +1,7 @@
 ﻿#include "slashcommands.h"
 
 void on_ready(dpp::cluster& bytebot) {
-	bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status	
+	//bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status	
 
 	
 		if (run_once<struct register_bot_commands>()) { //Avoid re-running on-ready declaration everytime that the bots makes a full reconnection
