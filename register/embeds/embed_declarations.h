@@ -1,7 +1,7 @@
 #pragma once
 #include "../../headers/mainheader.h"
 
-class lol {
+class embeds {
 public:
 	dpp::embed blacklist_embed(dpp::interaction& interaction);
 	dpp::embed bytebot_embed(dpp::interaction& interaction);
