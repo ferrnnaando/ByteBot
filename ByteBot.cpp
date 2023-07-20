@@ -9,7 +9,7 @@
 int main() {
 	dotenv::init();
 
-	embed_definitions embed;
+	embed_definition embed;
 
 	const std::string BOT_TOKEN{std::getenv("token")};
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
