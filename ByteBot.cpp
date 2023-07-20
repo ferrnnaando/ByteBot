@@ -5,6 +5,7 @@
 #include "register/buttons/on_button_click/on_button_click.h"
 #include "register/embeds/embed_declarations.h"
 #include "register/on_messages/on_messages.h"
+#include "register/embeds/embed_declarations.cpp"
 
 int main() {
 	dotenv::init();
@@ -120,7 +121,7 @@ int main() {
 
 				if (ban_perm.has(dpp::p_ban_members) || ban_perm.has(dpp::p_administrator)) {
 					dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
-					std::string ban_issue = std::get<std::string>(event.get_parameter("motivo")) + "```";
+					std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));
 					std::string member_staff = "<@" + std::to_string(interaction.usr.id) + ">";
 
 					if (std::to_string(usuario.id) == "1126691771506757713") {
@@ -143,7 +144,7 @@ int main() {
 						));
 					}
 
-					if (ban_issue.empty() || subcommand.options.empty()) {
+					if (ban_issue == "") {
 
 
 						bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed.ban_embed(interaction, member_staff)).add_component(

@@ -1,6 +1,6 @@
 #include "embed_declarations.h"
 
-class embed_definition : public lol {
+class embed_definition : public embeds {
 	public:
 		dpp::embed blacklist_embed(dpp::interaction& interaction)
 		{
