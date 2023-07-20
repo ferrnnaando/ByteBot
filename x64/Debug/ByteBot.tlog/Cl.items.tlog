@@ -1,4 +1,6 @@
 D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\ByteBot.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\ByteBot.obj
+D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\register\buttons\on_button_click\on_button_click.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\on_button_click.obj
 D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\register\embeds\embed_declarations.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\embed_declarations.obj
+D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\register\on_messages\on_messages.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\on_messages.obj
 D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\register\slashcommands\slashcommand_logger\slashcommand_logger.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\slashcommand_logger.obj
 D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\register\slashcommands\slashcommand_on_ready\slashcommands.cpp;D:\ferrnnaando\C++\2023\ByteBot_github\ByteBot\x64\Debug\slashcommands.obj

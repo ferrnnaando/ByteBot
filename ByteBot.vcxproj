@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ByteBot.cpp" />
+    <ClCompile Include="register\buttons\on_button_click\on_button_click.cpp" />
     <ClCompile Include="register\embeds\embed_declarations.cpp" />
     <ClCompile Include="register\on_messages\on_messages.cpp" />
     <ClCompile Include="register\slashcommands\slashcommand_logger\slashcommand_logger.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="header.h" />
     <ClInclude Include="headers\mainheader.h" />
+    <ClInclude Include="register\buttons\on_button_click\on_button_click.h" />
     <ClInclude Include="register\embeds\embed_declarations.h" />
     <ClInclude Include="register\on_messages\on_messages.h" />
     <ClInclude Include="register\slashcommands\slashcommand_on_ready\slashcommands.h" />

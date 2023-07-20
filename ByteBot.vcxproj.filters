@@ -33,6 +33,9 @@
     <ClCompile Include="register\on_messages\on_messages.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="register\buttons\on_button_click\on_button_click.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h">
@@ -48,6 +51,9 @@
       <Filter>Archivos de origen</Filter>
     </ClInclude>
     <ClInclude Include="register\on_messages\on_messages.h">
+      <Filter>Archivos de origen</Filter>
+    </ClInclude>
+    <ClInclude Include="register\buttons\on_button_click\on_button_click.h">
       <Filter>Archivos de origen</Filter>
     </ClInclude>
   </ItemGroup>

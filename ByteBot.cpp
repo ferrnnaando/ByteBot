@@ -9,7 +9,8 @@
 int main() {
 	dotenv::init();
 
-	embed_content embed;
+	embed_definitions embed;
+
 	const std::string BOT_TOKEN{std::getenv("token")};
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
