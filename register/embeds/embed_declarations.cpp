@@ -1,4 +1,6 @@
 #include "embed_declarations.h"
+using namespace std;
+using namespace dpp;
 
 class embed_definition : public embeds {
 	public:

@@ -7,6 +7,14 @@
 #include "register/on_messages/on_messages.h"
 #include "register/embeds/embed_declarations.cpp"
 
+#include <ctime>
+#include <time.h>
+#include <iomanip>
+#include <chrono>
+
+using namespace std;
+using namespace dpp;
+
 int main() {
 	dotenv::init();
 
