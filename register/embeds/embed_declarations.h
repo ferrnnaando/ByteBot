@@ -10,5 +10,5 @@ class embeds {
 		dpp::embed avatar_embed(dpp::interaction& interaction);
 		dpp::embed usuario_avatar_embed(dpp::interaction& interaction, dpp::user& avatar);
 		dpp::embed ban_embed(dpp::interaction& interaction, std::string& member_staff);
-};
 
+};
