@@ -13,7 +13,8 @@ const std::string blacklisted_servers[1] = { "1130583864818016278"};
 //const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
 
 enum flags {
-	ephemeral = dpp::m_ephemeral
+	ephemeral = dpp::m_ephemeral//,
+	//label = dpp::component().set_label("test")
 };
 
 //###########################################################################################################################################################################

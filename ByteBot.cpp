@@ -121,7 +121,7 @@ int main() {
 
 				if (ban_perm.has(dpp::p_ban_members) || ban_perm.has(dpp::p_administrator)) {
 					dpp::user usuario = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
-					std::string ban_issue = std::get<std::string>(event.get_parameter("motivo"));
+					std::string ban_issue = std::get<std::string>(event.get_parameter("motivo")) + "```";
 					std::string member_staff = "<@" + std::to_string(interaction.usr.id) + ">";
 
 					if (std::to_string(usuario.id) == "1126691771506757713") {
@@ -144,31 +144,6 @@ int main() {
 						));
 					}
 
-					if (ban_issue == "") {
-
-
-						bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed.ban_embed(interaction, member_staff)).add_component(
-							dpp::component().add_component(
-								dpp::component().set_label("Servidor de soporte")
-								.set_style(cos_link)
-								.set_url(discord_link_inv)
-								.set_type(cot_button)
-								.set_emoji("🙌")
-							)
-
-							.add_component(
-								dpp::component().set_label("¡Invitame a tu servidor!")
-								.set_style(cos_link)
-								.set_url(bot_invite)
-								.set_type(cot_button)
-								.set_emoji("🤖")
-							)
-						));
-
-						std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Ha ejecutado /" << interaction.get_command_name() << " y ha baneado a " << member_staff << " en el servidor <@&" << interaction.guild_id << ">" << std::endl;
-						event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
-					}
-					else if (!ban_issue.empty()) {
 						const dpp::embed embed_baneado = dpp::embed()
 							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 							.set_description("Has sido baneado del servidor `" + interaction.get_guild().name + "`. A continuación se te proporcionan algunos detalles.")
@@ -198,7 +173,7 @@ int main() {
 						std::cout << "[" + dpp::utility::current_date_time() + "] - " << interaction.usr.username << " || Ha ejecutado /" << interaction.get_command_name() << " y ha baneado a " << member_staff << " en el servidor <@&" << interaction.guild_id << ">" << std::endl;
 						event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
 					}
-				}
+				
 				else {
 					event.reply(message(interaction.channel_id, "<:lock23:1130126354512351424> | No tienes los permisos necesarios para ejecutar ese comando.").set_flags(dpp::m_ephemeral));
 				}

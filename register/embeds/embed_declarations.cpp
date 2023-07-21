@@ -108,18 +108,5 @@ class embed_definition : public embeds {
 			return usuario_embed_avatar;
 		}
 
-		dpp::embed ban_embed(dpp::interaction& interaction, std::string& member_staff)
-		{
-			const dpp::embed embed_baneado = dpp::embed()
-				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-				.set_description("Has sido baneado del servidor `" + interaction.get_guild().name + "`. A continuación se te proporcionan algunos detalles.")
-				.set_color(ec_default)
-				.add_field("<:discordstuff:1129970524903190659> Responsable", member_staff, true)
-				.add_field("<:warningdisc:1129900021718982757> Motivo", "``` No especificado. ```", true)
-				.set_footer(embed_footer().set_icon(interaction.usr.get_avatar_url()).set_text("Disclaimer: ByteBot no es responsable ni gestiona las sanciones que aplican los moderadores de servidores que usan ByteBot. Es de su responsabilidad informarse de la normativa vigente  de cada servidor para evitar futuras sanciones."))
-				;
-
-			return embed_baneado;
-		}
 
 };

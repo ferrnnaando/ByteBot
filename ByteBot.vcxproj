@@ -145,6 +145,7 @@
     <ClCompile Include="register\on_messages\on_messages.cpp" />
     <ClCompile Include="register\slashcommands\slashcommand_logger\slashcommand_logger.cpp" />
     <ClCompile Include="register\slashcommands\slashcommand_on_ready\slashcommands.cpp" />
+    <ClCompile Include="variables\variables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header.h" />

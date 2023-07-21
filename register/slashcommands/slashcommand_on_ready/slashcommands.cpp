@@ -19,9 +19,11 @@ void on_ready(dpp::cluster& bytebot) {
 			dpp::slashcommand avatar("avatar", option_usuario_slashcmd_avatar, bytebot.me.id);
 			avatar.add_option(dpp::command_option(co_user, "usuario", description_slashcmd_avatar, false));
 
-			slashcommand banear("banear", "Banea a un usuario del servidor", bytebot.me.id);
-			banear.add_option(dpp::command_option(co_user, "usuario", description_slashcmd_ban, true));
-			banear.add_option(dpp::command_option(co_string, "motivo", "Especifica un motivo por el que banear al usuario.", false));
+			dpp::slashcommand banear("banear", "Banea a un usuario del servidor", bytebot.me.id);
+			banear.add_option(dpp::command_option(co_user, "usuario", "Especifica al usuario que deseas banear.", true)
+				.add_option(dpp::command_option(co_string, "motivo", "Especifica un motivo por el que banear al usuario.", true)));
+
+
 
 			slashcommand reportar("reportar", description_slashcmd_report, bytebot.me.id);
 			reportar.add_option(dpp::command_option(co_string, "mensaje", option_usuario_slashcmd_report, true));
@@ -37,6 +39,7 @@ void on_ready(dpp::cluster& bytebot) {
 			bytebot.global_command_create(avatar);
 			bytebot.global_command_create(banear);
 			bytebot.global_command_create(reportar);
+			//bytebot.guild_command_create(banearte);
 			//bytebot.global_bulk_command_create({ comandos, informacion, infousuario, infoservidor, avatar, banear , reportar });
 		}
 }
