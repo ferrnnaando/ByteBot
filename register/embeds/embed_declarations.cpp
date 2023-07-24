@@ -14,7 +14,7 @@
 
 		dpp::embed bytebot_embed(dpp::interaction& interaction)
 		{
-			const dpp::embed embed_bytebot = embed()
+			const dpp::embed embed_bytebot = dpp::embed()
 				.set_color(ec_default)
 				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 				.set_title("El poder de ByteBot en tus teclas.")
@@ -31,7 +31,7 @@
 
 		dpp::embed commands_embed(dpp::interaction& interaction)
 		{
-			const embed embed_commands = embed()
+			const dpp::embed embed_commands = dpp::embed()
 				.set_color(ec_default)
 				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 				.set_description("`/commands` | **¡Hola! Maybe you know me, maybe not. Anyway, Im here to help you making discord a chiller place. My commands are sub-divided into categories**")
@@ -43,7 +43,7 @@
 		dpp::embed infoservidor(dpp::interaction& interaction, std::string& guild_owner_formatted, std::string& guild_name, std::string& partnered_guild_str, bool& guild_is_partnered, std::string& total_guild_channels, std::string& total_guild_roles, std::string& total_guild_emojis, const std::vector<dpp::snowflake>& channels, const std::vector<dpp::snowflake>& roles, const std::vector<dpp::snowflake>& emojis, const dpp::guild& g, std::string& guild_id, std::string& formatted_date_guild, std::string& guild_description_formatted, std::string& guild_2fa_level)
 		{
 			if (!g.description.empty()) {
-				const dpp::embed embed_infoservidor = embed()
+				const dpp::embed embed_infoservidor = dpp::embed()
 					.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 					.set_image(interaction.get_guild().get_banner_url())
 					.set_color(ec_default)
@@ -63,7 +63,7 @@
 				return embed_infoservidor;
 			}
 			else {
-				const dpp::embed embed_infoservidor = embed()
+				const dpp::embed embed_infoservidor = dpp::embed()
 					.set_image(interaction.get_guild().get_banner_url())
 					.set_color(ec_default)
 					.add_field("<:owner:1129273470040158319> Propietario", guild_owner_formatted, true)
@@ -86,7 +86,7 @@
 		dpp::embed avatar_embed(dpp::interaction& interaction)
 		{
 			//maybe can check for both embeds here and avoid using 2 ifs on the commmand.
-			const embed embed_avatar = embed()
+			const dpp::embed embed_avatar = dpp::embed()
 				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 				.set_color(ec_default)
 				.set_image(interaction.usr.get_avatar_url(1024))
@@ -97,7 +97,7 @@
 
 		dpp::embed usuario_avatar_embed(dpp::interaction& interaction, dpp::user& avatar)
 		{
-			const embed usuario_embed_avatar = embed()
+			const dpp::embed usuario_embed_avatar = dpp::embed()
 				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 				.set_color(ec_default)
 				.set_image(avatar.get_avatar_url(1024))

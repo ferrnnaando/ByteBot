@@ -1,6 +1,4 @@
-#ifndef EMBED_DECLARATIONS_H__
-#define EMBED_DECLARATIONS_H__
-
+#pragma once
 #include "../../headers/mainheader.h"
 
 		dpp::embed blacklist_embed(dpp::interaction& interaction);
@@ -10,7 +8,3 @@
 		dpp::embed avatar_embed(dpp::interaction& interaction);
 		dpp::embed usuario_avatar_embed(dpp::interaction& interaction, dpp::user& avatar);
 		dpp::embed ban_embed(dpp::interaction& interaction, std::string& member_staff);
-
-
-
-#endif
