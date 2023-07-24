@@ -11,8 +11,7 @@
 int main() {
 	//dotenv::init();
 
-	//const std::string BOT_TOKEN{std::getenv("token")};
-	dpp::cluster bytebot("MTAyMDc3MTIwNzg3ODAxNzEyNQ.GsZHmF.CGvIzTZApZ8jMa5NaR5PBy1SDgXVYzYFNfNaSw", dpp::i_default_intents | dpp::i_message_content);
+
 	dpp::webhook bytebot_wh(reports_webhook);
 	
 	bytebot.on_log(utility::cout_logger());
