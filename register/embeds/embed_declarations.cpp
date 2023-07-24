@@ -1,9 +1,5 @@
 #include "embed_declarations.h"
-using namespace std;
-using namespace dpp;
 
-class embed_definition : public embeds {
-	public:
 		dpp::embed blacklist_embed(dpp::interaction& interaction)
 		{
 			const dpp::embed embed_blacklisted = dpp::embed()
@@ -109,6 +105,3 @@ class embed_definition : public embeds {
 
 			return usuario_embed_avatar;
 		}
-
-
-};

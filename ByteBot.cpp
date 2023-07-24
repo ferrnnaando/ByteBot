@@ -5,23 +5,13 @@
 #include "register/buttons/on_button_click/on_button_click.h"
 #include "register/embeds/embed_declarations.h"
 #include "register/on_messages/on_messages.h"
-#include "register/embeds/embed_declarations.cpp"
 
-#include <ctime>
-#include <time.h>
-#include <iomanip>
-#include <chrono>
-
-using namespace std;
-using namespace dpp;
 
 int main() {
-	dotenv::init();
+	//dotenv::init();
 
-	embed_definition embed;
-
-	const std::string BOT_TOKEN{std::getenv("token")};
-	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
+	//const std::string BOT_TOKEN{std::getenv("token")};
+	dpp::cluster bytebot("MTAyMDc3MTIwNzg3ODAxNzEyNQ.GsZHmF.CGvIzTZApZ8jMa5NaR5PBy1SDgXVYzYFNfNaSw", dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
 	
 	bytebot.on_log(utility::cout_logger());
@@ -34,7 +24,7 @@ int main() {
 		on_message_create(msg, bytebot);
 	});
 
-	bytebot.on_slashcommand([&embed, &bytebot, &bytebot_wh](const slashcommand_t& event) { //DO find arrays with find and end.
+	bytebot.on_slashcommand([&bytebot, &bytebot_wh](const slashcommand_t& event) { //DO find arrays with find and end.
 		dpp::interaction interaction = event.command;
 		dpp::command_interaction cmd_data = interaction.get_command_interaction();
 		auto subcommand = cmd_data;
@@ -53,18 +43,18 @@ int main() {
 
 
 			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
-			event.reply(message(event.command.get_channel().id, embed.blacklist_embed(interaction)).set_flags(ephemeral));
+			event.reply(message(event.command.get_channel().id, blacklist_embed(interaction)).set_flags(ephemeral));
 
 		}
 		else {
 			if (interaction.get_command_name() == "informacion") {
 				slashcmd_reg(interaction);
-				event.reply(message(interaction.get_channel().id, embed.bytebot_embed(interaction)).set_flags(ephemeral));
+				event.reply(message(interaction.get_channel().id, bytebot_embed(interaction)).set_flags(ephemeral));
 
 			}
 			else if (interaction.get_command_name() == "comandos") {
 				slashcmd_reg(interaction);
-				event.reply(message(event.command.get_channel().id, embed.commands_embed(interaction)));
+				event.reply(message(event.command.get_channel().id, commands_embed(interaction)));
 
 			}
 			else if (interaction.get_command_name() == "infoservidor") {
@@ -92,19 +82,15 @@ int main() {
 				std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
 				std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
 
-				switch (guild_is_partnered) {
-				case 0 || false:
+				if(guild_is_partnered == 0) {
 					partnered_guild_str = "```No.```";
-					break;
-				case 1 || true:
-					partnered_guild_str = "```Si.```";
-					break;
-
-				default:
-					break;
 				}
+				else {
+					partnered_guild_str = "```Si.```";
+				}
+				
 
-				event.reply(message(interaction.get_channel().id, embed.infoservidor(
+				event.reply(message(interaction.get_channel().id, infoservidor(
 					interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
 					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level
 				)));
@@ -114,11 +100,11 @@ int main() {
 			else if (interaction.get_command_name() == "avatar") {
 
 				if (subcommand.options.empty()) {
-					event.reply(message(interaction.get_channel().id, embed.avatar_embed(interaction)));
+					event.reply(message(interaction.get_channel().id, avatar_embed(interaction)));
 				}
 				else {
 					dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
-					event.reply(message(interaction.get_channel().id, embed.usuario_avatar_embed(interaction, avatar)));
+					event.reply(message(interaction.get_channel().id, usuario_avatar_embed(interaction, avatar)));
 
 				}
 				slashcmd_reg(interaction);

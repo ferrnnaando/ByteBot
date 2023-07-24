@@ -1,8 +1,8 @@
-#pragma once
+#ifndef EMBED_DECLARATIONS_H__
+#define EMBED_DECLARATIONS_H__
+
 #include "../../headers/mainheader.h"
 
-class embeds {
-	public:
 		dpp::embed blacklist_embed(dpp::interaction& interaction);
 		dpp::embed bytebot_embed(dpp::interaction& interaction);
 		dpp::embed commands_embed(dpp::interaction& interaction);
@@ -11,4 +11,6 @@ class embeds {
 		dpp::embed usuario_avatar_embed(dpp::interaction& interaction, dpp::user& avatar);
 		dpp::embed ban_embed(dpp::interaction& interaction, std::string& member_staff);
 
-};
+
+
+#endif

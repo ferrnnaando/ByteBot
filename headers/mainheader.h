@@ -3,7 +3,9 @@
 #include <iostream>
 #include <string>
 #include "dpp/dpp.h"
-#include <dotenv.h>
+//#include <dotenv.h>
 
 #include "../variables/variables.cpp"
 
+using namespace std;
+using namespace dpp;
