@@ -94,14 +94,3 @@
 
 			return embed_avatar;
 		}
-
-		dpp::embed usuario_avatar_embed(dpp::interaction& interaction, dpp::user& avatar)
-		{
-			const dpp::embed usuario_embed_avatar = dpp::embed()
-				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-				.set_color(ec_default)
-				.set_image(avatar.get_avatar_url(1024))
-				;
-
-			return usuario_embed_avatar;
-		}
