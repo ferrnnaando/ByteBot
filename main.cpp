@@ -28,7 +28,7 @@ int main(){
 	bytebot.on_slashcommand([&bytebot, &bytebot_wh](const slashcommand_t& event) { //DO find arrays with find and end.
 		dpp::interaction interaction = event.command;
 		dpp::command_interaction cmd_data = interaction.get_command_interaction();
-		auto subcommand = cmd_data;
+		dpp::command_interaction subcommand = cmd_data;
 
 		const std::string owner_guild_id = std::to_string(interaction.get_guild().owner_id);
 		const std::string guild_name = interaction.get_guild().name;
@@ -60,19 +60,19 @@ int main(){
 				event.reply(dpp::message(event.command.get_channel().id, commands_embed(interaction)));
 
 			}
-			else if (interaction.get_command_name() == "infousuario") {
-				if (subcommand.options.empty()) {
-					const auto username = "```" + interaction.usr.username + "```";
+			/*else if (interaction.get_command_name() == "infousuario") {
+				
+					const std::string username = "```" + interaction.usr.username + "```";
 					const std::string username_avatar_formatted = "[Ver aquí](" + interaction.usr.get_avatar_url() + ").";
-					const auto username_discriminator = "```" + std::to_string(interaction.usr.discriminator) + "```";
-					const auto username_have_nitro_basic = interaction.usr.has_nitro_basic();
-					const auto username_have_nitro_classic = interaction.usr.has_nitro_classic();
-					const auto username_have_nitro_full = interaction.usr.has_nitro_full();
-					const auto is_bot_verified = interaction.usr.is_verified_bot();
-					const auto is_house_brilliance = interaction.usr.is_house_brilliance();
-					const auto is_house_bravery = interaction.usr.is_house_bravery();
-					const auto is_house_balance = interaction.usr.is_house_balance();
-					const auto is_early_supporter = interaction.usr.is_early_supporter();
+					const std::string username_discriminator = "```" + std::to_string(interaction.usr.discriminator) + "```";
+					const bool username_have_nitro_basic = interaction.usr.has_nitro_basic();
+					const bool username_have_nitro_classic = interaction.usr.has_nitro_classic();
+					const bool username_have_nitro_full = interaction.usr.has_nitro_full();
+					const bool is_bot_verified = interaction.usr.is_verified_bot();
+					const bool is_house_brilliance = interaction.usr.is_house_brilliance();
+					const bool is_house_bravery = interaction.usr.is_house_bravery();
+					const bool is_house_balance = interaction.usr.is_house_balance();
+					const bool is_early_supporter = interaction.usr.is_early_supporter();
 
 					const std::string user_id_formatted = "```" + std::to_string(interaction.usr.id) + "```";
 
@@ -130,75 +130,72 @@ int main(){
 
 					}
 
-						event.reply(message(interaction.get_channel().id, embed_infousuario));
-				}
-				else {
 					dpp::user user = interaction.get_resolved_user(subcommand.get_value<snowflake>(0));
 
-					const auto username = "```" + user.username + "```";
+					const std::string user_username = "```" + user.username + "```";
 					const std::string username_avatar_formatted = "[Ver aquí](" + user.get_avatar_url() + ").";
-					const auto username_discriminator = "```" + std::to_string(user.discriminator) + "```";
-					const auto username_have_nitro_basic = user.has_nitro_basic();
-					const auto username_have_nitro_classic = user.has_nitro_classic();
-					const auto username_have_nitro_full = user.has_nitro_full();
-					const auto is_bot_verified = user.is_verified_bot();
-					const auto is_house_brilliance = user.is_house_brilliance();
-					const auto is_house_bravery = user.is_house_bravery();
-					const auto is_house_balance = user.is_house_balance();
-					const auto is_early_supporter = user.is_early_supporter();
+					const std::string username_discriminator = "```" + std::to_string(user.discriminator) + "```";
+					const bool username_have_nitro_basic = user.has_nitro_basic();
+					const bool username_have_nitro_classic = user.has_nitro_classic();
+					const bool username_have_nitro_full = user.has_nitro_full();
+					const bool is_bot_verified = user.is_verified_bot();
+					const bool is_house_brilliance = user.is_house_brilliance();
+					const bool is_house_bravery = user.is_house_bravery();
+					const bool is_house_balance = user.is_house_balance();
+					const bool is_early_supporter = user.is_early_supporter();
 
-					const std::string user_id_formatted = "```" + std::to_string(user.id) + "```";
+					const std::string user_user_id_formatted = "```" + std::to_string(user.id) + "```";
 
-					std::string have_nitro, is_bot_verified_str, hypesquad_str;
+					std::string user_have_nitro, user_is_bot_verified_str, user_hypesquad_str;
 
 					if (is_house_balance) {
-						hypesquad_str = "```Sí. (House Balance)```";
+						user_hypesquad_str = "```Sí. (House Balance)```";
 
 					}
 					else if (is_house_bravery) {
-						hypesquad_str = "```Sí. (House Bravery)```";
+						user_hypesquad_str = "```Sí. (House Bravery)```";
 
 					}
 					else if (is_house_brilliance) {
-						hypesquad_str = "```Sí. (House Brilliance)```";
+						user_hypesquad_str = "```Sí. (House Brilliance)```";
 
 					}
 					else {
-						hypesquad_str = "```No.```";
+						user_hypesquad_str = "```No.```";
 
 					}
 
 					switch (username_have_nitro_basic) {
 					case 0 || false:
-						have_nitro = "```No.```";
+						user_have_nitro = "```No.```";
 						if (username_have_nitro_classic) {
-							have_nitro = "```Tiene nitro classic.```";
+							user_have_nitro = "```Tiene nitro classic.```";
 
 						}
 						else if (username_have_nitro_full) {
-							have_nitro = "```Tiene nitro full.```";
+							user_have_nitro = "```Tiene nitro full.```";
 						}
 
 						break;
 					case 1 || true:
-						have_nitro = "```Sí.```";
+						user_have_nitro = "```Sí.```";
 						if (username_have_nitro_classic) {
-							have_nitro = "```Tiene nitro classic.```";
+							user_have_nitro = "```Tiene nitro classic.```";
 
 						}
 						else if (username_have_nitro_full) {
-							have_nitro = "```Tiene nitro full.```";
+							user_have_nitro = "```Tiene nitro full.```";
 						}
 						break;
 					}
 
 					switch (is_bot_verified) {
 					case 0 || false:
-						is_bot_verified_str = "```No.```";
+						user_is_bot_verified_str = "```No.```";
 						break;
 
 					case 1 || true:
-						is_bot_verified_str = "```Sí.```";
+						user_is_bot_verified_str = "```Sí.```";
 						break;
 
 					}
@@ -207,44 +204,12 @@ int main(){
 					std::tm* fecha_hora_user = std::gmtime(&timestamp_user);
 					char buffer_user[80];
 					std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
-					std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
+					std::string user_formatted_date_user = "```" + std::string(buffer_user) + "```";
 
-					if (user.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
-							.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
-
-						event.reply(message(interaction.get_channel().id, embed_infousuario));
+						event.reply(message(interaction.get_channel().id, infousuario()));
 
 					}
-					else if (!user.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true)
-							.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
-
-						event.reply(message(interaction.get_channel().id, embed_infousuario));
-
-					}
-				}
-
-				slashcmd_reg(interaction);
-				//cooldown_slashcmds;
-
-			}
+				}*/
 			else if (interaction.get_command_name() == "infoservidor") {
 				std::string partnered_guild_str;
 
@@ -281,21 +246,16 @@ int main(){
 					interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
 					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level
 				)));
-
-				slashcmd_reg(interaction);
 			}
 			else if (interaction.get_command_name() == "avatar") {
-
-				if (subcommand.options.empty()) {
-					event.reply(message(interaction.get_channel().id, avatar_embed(interaction)));
-				}
-				else {
-					dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
-					event.reply(message(interaction.get_channel().id, usuario_avatar_embed(interaction, avatar)));
-
-				}
-				slashcmd_reg(interaction);
-
+					if (subcommand.options.empty()) {
+					
+					event.reply(message(interaction.get_channel().id, avatar_embed(interaction, interaction.usr)));
+					}
+					else {
+						dpp::user avatar = interaction.get_resolved_user(subcommand.get_value<dpp::snowflake>(0));
+						event.reply(message(interaction.get_channel().id, avatar_embed(interaction, avatar)));
+					}
 			}
 			else if (interaction.get_command_name() == "banear") {
 				dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
@@ -372,8 +332,7 @@ int main(){
 		});
 
 
-		bytebot.on_button_click([&bytebot](const dpp::button_click_t event) {
-			
+		bytebot.on_button_click([&bytebot](const dpp::button_click_t event) {	
 			on_button_click(event, bytebot);
 		});
 
