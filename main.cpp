@@ -45,16 +45,8 @@ int main(){
 					char buffer_user[80];
 					std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
 					std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
-		
-		switch(event.get_command_name()) {
-			case "informacion":
-			event.reply("aa");
-			break:
-		}
 
 		if (interaction.usr.id == blacklisted_users[0] || interaction.usr.id == blacklisted_users[1]) {
-
-
 			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
 			event.reply(dpp::message(event.command.get_channel().id, blacklist_embed(interaction)).set_flags(ephemeral));
 
@@ -138,40 +130,7 @@ int main(){
 
 					}
 
-					
-					if (interaction.usr.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
-							.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
-
 						event.reply(message(interaction.get_channel().id, embed_infousuario));
-
-					}
-					else if (!interaction.usr.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true)
-							.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
-
-						event.reply(message(interaction.get_channel().id, embed_infousuario));
-
-					}
-
-					slashcmd_reg(interaction);
-					//cooldown_slashcmds;
 				}
 				else {
 					dpp::user user = interaction.get_resolved_user(subcommand.get_value<snowflake>(0));
