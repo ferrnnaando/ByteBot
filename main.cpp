@@ -49,32 +49,29 @@ int main(){
 		if (interaction.usr.id == blacklisted_users[0] || interaction.usr.id == blacklisted_users[1]) {
 			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
 			event.reply(dpp::message(event.command.get_channel().id, blacklist_embed(interaction)).set_flags(ephemeral));
-
 		}
 		else {
 			if (interaction.get_command_name() == "informacion") {
 				event.reply(dpp::message(interaction.get_channel().id, bytebot_embed(interaction)).set_flags(ephemeral));
-
 			}
 			else if (interaction.get_command_name() == "comandos") {
 				event.reply(dpp::message(event.command.get_channel().id, commands_embed(interaction)));
-
 			}
-			/*else if (interaction.get_command_name() == "infousuario") {
-				
-					const std::string username = "```" + interaction.usr.username + "```";
-					const std::string username_avatar_formatted = "[Ver aquí](" + interaction.usr.get_avatar_url() + ").";
-					const std::string username_discriminator = "```" + std::to_string(interaction.usr.discriminator) + "```";
-					const bool username_have_nitro_basic = interaction.usr.has_nitro_basic();
-					const bool username_have_nitro_classic = interaction.usr.has_nitro_classic();
-					const bool username_have_nitro_full = interaction.usr.has_nitro_full();
-					const bool is_bot_verified = interaction.usr.is_verified_bot();
-					const bool is_house_brilliance = interaction.usr.is_house_brilliance();
-					const bool is_house_bravery = interaction.usr.is_house_bravery();
-					const bool is_house_balance = interaction.usr.is_house_balance();
-					const bool is_early_supporter = interaction.usr.is_early_supporter();
+			else if (interaction.get_command_name() == "infousuario") {
+				if(subcommand.options.empty()) {
+					std::string username = "```" + interaction.usr.username + "```";
+					std::string username_avatar_formatted = "[Ver aquí](" + interaction.usr.get_avatar_url() + ").";
+					std::string username_discriminator = "```" + std::to_string(interaction.usr.discriminator) + "```";
+					bool username_have_nitro_basic = interaction.usr.has_nitro_basic();
+					bool username_have_nitro_classic = interaction.usr.has_nitro_classic();
+					bool username_have_nitro_full = interaction.usr.has_nitro_full();
+					bool is_bot_verified = interaction.usr.is_verified_bot();
+					bool is_house_brilliance = interaction.usr.is_house_brilliance();
+					bool is_house_bravery = interaction.usr.is_house_bravery();
+					bool is_house_balance = interaction.usr.is_house_balance();
+					bool is_early_supporter = interaction.usr.is_early_supporter();
 
-					const std::string user_id_formatted = "```" + std::to_string(interaction.usr.id) + "```";
+					std::string user_id_formatted = "```" + std::to_string(interaction.usr.id) + "```";
 
 					std::string have_nitro, is_bot_verified_str, hypesquad_str;
 
@@ -129,73 +126,74 @@ int main(){
 						break;
 
 					}
-
+				}
+				else {
 					dpp::user user = interaction.get_resolved_user(subcommand.get_value<snowflake>(0));
 
-					const std::string user_username = "```" + user.username + "```";
-					const std::string username_avatar_formatted = "[Ver aquí](" + user.get_avatar_url() + ").";
-					const std::string username_discriminator = "```" + std::to_string(user.discriminator) + "```";
-					const bool username_have_nitro_basic = user.has_nitro_basic();
-					const bool username_have_nitro_classic = user.has_nitro_classic();
-					const bool username_have_nitro_full = user.has_nitro_full();
-					const bool is_bot_verified = user.is_verified_bot();
-					const bool is_house_brilliance = user.is_house_brilliance();
-					const bool is_house_bravery = user.is_house_bravery();
-					const bool is_house_balance = user.is_house_balance();
-					const bool is_early_supporter = user.is_early_supporter();
+					std::string username = "```" + user.username + "```";
+					std::string username_avatar_formatted = "[Ver aquí](" + user.get_avatar_url() + ").";
+					std::string username_discriminator = "```" + std::to_string(user.discriminator) + "```";
+					bool have_nitro_basic = user.has_nitro_basic();
+					bool have_nitro_classic = user.has_nitro_classic();
+					bool have_nitro_full = user.has_nitro_full();
+					bool is_bot_verified = user.is_verified_bot();
+					bool is_house_brilliance = user.is_house_brilliance();
+					bool is_house_bravery = user.is_house_bravery();
+					bool is_house_balance = user.is_house_balance();
+					bool is_early_supporter = user.is_early_supporter();
 
-					const std::string user_user_id_formatted = "```" + std::to_string(user.id) + "```";
+					 std::string user_id_formatted = "```" + std::to_string(user.id) + "```";
 
-					std::string user_have_nitro, user_is_bot_verified_str, user_hypesquad_str;
+					std::string have_nitro, is_bot_verified_str, hypesquad_str;
 
 					if (is_house_balance) {
-						user_hypesquad_str = "```Sí. (House Balance)```";
+						hypesquad_str = "```Sí. (House Balance)```";
 
 					}
 					else if (is_house_bravery) {
-						user_hypesquad_str = "```Sí. (House Bravery)```";
+						hypesquad_str = "```Sí. (House Bravery)```";
 
 					}
 					else if (is_house_brilliance) {
-						user_hypesquad_str = "```Sí. (House Brilliance)```";
+						hypesquad_str = "```Sí. (House Brilliance)```";
 
 					}
 					else {
-						user_hypesquad_str = "```No.```";
+						hypesquad_str = "```No.```";
 
 					}
 
-					switch (username_have_nitro_basic) {
+					switch (have_nitro_basic) {
 					case 0 || false:
-						user_have_nitro = "```No.```";
-						if (username_have_nitro_classic) {
-							user_have_nitro = "```Tiene nitro classic.```";
+						have_nitro = "```No.```";
+						if (have_nitro_classic) {
+							have_nitro = "```Tiene nitro classic.```";
 
 						}
-						else if (username_have_nitro_full) {
-							user_have_nitro = "```Tiene nitro full.```";
+						else if (have_nitro_full) {
+							have_nitro = "```Tiene nitro full.```";
 						}
 
 						break;
 					case 1 || true:
-						user_have_nitro = "```Sí.```";
-						if (username_have_nitro_classic) {
-							user_have_nitro = "```Tiene nitro classic.```";
+						have_nitro = "```Sí.```";
+						if (have_nitro_classic) {
+							have_nitro = "```Tiene nitro classic.```";
 
 						}
-						else if (username_have_nitro_full) {
-							user_have_nitro = "```Tiene nitro full.```";
+						else if (have_nitro_full) {
+							have_nitro = "```Tiene nitro full.```";
 						}
 						break;
 					}
 
 					switch (is_bot_verified) {
 					case 0 || false:
-						user_is_bot_verified_str = "```No.```";
+						is_bot_verified_str = "```No.```";
 						break;
 
 					case 1 || true:
-						user_is_bot_verified_str = "```Sí.```";
+						is_bot_verified_str = "```Sí.```";
 						break;
 
 					}
@@ -206,10 +204,9 @@ int main(){
 					std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
 					std::string user_formatted_date_user = "```" + std::string(buffer_user) + "```";
 
-						event.reply(message(interaction.get_channel().id, infousuario()));
-
+					event.reply(message(interaction.get_channel().id, infousuario(user, interaction, have_nitro, is_bot_verified_str, hypesquad_str, username, username_avatar_formatted, username_discriminator, user_id_formatted, formatted_date_user)));
 					}
-				}*/
+				}
 			else if (interaction.get_command_name() == "infoservidor") {
 				std::string partnered_guild_str;
 
@@ -325,7 +322,7 @@ int main(){
 
 				bytebot.direct_message_create(1068126654368583770, report_formatted);
 				bytebot.execute_webhook_sync(bytebot_wh, report_formatted);
-				event.reply("<:clydecheck:1129147137146503278> Mensaje enviado.");
+				event.reply(message(interaction.channel_id, "<:clydecheck:1129147137146503278> Mensaje enviado.").set_flags(ephemeral));
 				slashcmd_reg(interaction);
 			}
 		}
