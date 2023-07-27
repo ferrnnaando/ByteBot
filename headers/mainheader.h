@@ -1,11 +1,30 @@
-#pragma once
 #pragma warning(disable : 4996)
-#include <iostream>
-#include <string>
-#include "dpp/dpp.h"
-#include <dotenv.h>
 
-#include "../variables/variables.cpp"
+#ifdef __linux__
+	#include <unistd.h>
+#elif defined(_WIN32) || defined(_WIN64)
+	#include <Windows.h>
 
-using namespace std;
-using namespace dpp;
+#endif
+
+#ifdef __GNUC__ || _MSC_VER
+    #pragma once
+    #include <iostream>
+    #include <fstream>
+    #include <string>
+    #include <dotenv.h>
+    #include "dpp/dpp.h"
+    #include "../variables/variables.cpp"
+#elif
+    #ifdef MAINHEADER_H
+    #define MAINHEADER_H
+
+    #include <iostream>
+    #include <fstream>
+    #include <string>
+    #include <dotenv.h>
+    #include "dpp/dpp.h"
+    #include "../variables/variables.cpp"
+
+    #endif MAINHEADER_H
+#endif
