@@ -371,8 +371,10 @@ int main(){
 		 }
 	 });
 
-	 bytebot.on_button_click([&bytebot](const dpp::button_click_t event)
-							 { on_button_click(event, bytebot); });
+	bytebot.on_button_click([&bytebot](const dpp::button_click_t event) {
+		on_button_click(event, bytebot);
+		
+	});
 
 	 bytebot.start(st_wait);
 	 return 0;

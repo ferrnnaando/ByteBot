@@ -1,5 +1,8 @@
 ﻿#include "on_messages.h"
 
+using namespace std;
+using namespace dpp;
+
 void on_message_create(const dpp::message_create_t& msg, dpp::cluster& bytebot)
 {
 	if (msg.msg.is_dm()) {
@@ -54,5 +57,22 @@ void on_message_create(const dpp::message_create_t& msg, dpp::cluster& bytebot)
 						.set_id("md_btn_invite")
 						)
 				));
+	}
+	else if(msg.msg.content = "##stop") {
+		if (interaction.usr.id == bytebot_developers[0]) {		
+			pid_t pID = getpid();
+			const char* reload_command = ("kill -15 " + std::to_string(pID)).c_str();
+			bool reload = system(reload_command);
+			if (reload == 0 || false) {
+				event.reply("");
+				std::cout << "There was an error trying to doing the command. Please check output";
+			}
+			/*else {
+				const char *init_command = "bash scripts/build.sh main";
+				system(init_command);
+				std::string bot_on = "Bot iniciado.";
+				bytebot.direct_message_create(interaction.usr.id, message(interaction.get_channel().is_dm(), "AAAA").add_component(dpp::component().add_component(dpp::component().set_label("Servidor de soporte").set_style(cos_link).set_url(discord_link_inv).set_type(cot_button).set_emoji("🙌")).add_component(dpp::component().set_label("¡Invitame a tu servidor!").set_style(cos_link).set_url(bot_invite).set_type(cot_button).set_emoji("🤖"))));
+			}*/
+		}
 	}
 }

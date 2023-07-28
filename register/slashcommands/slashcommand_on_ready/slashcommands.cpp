@@ -25,8 +25,6 @@ void on_ready(dpp::cluster& bytebot) {
 			banear.add_option(dpp::command_option(co_user, "usuario", "Especifica al usuario que deseas banear.", true)
 				.add_option(dpp::command_option(co_string, "motivo", "Especifica un motivo por el que banear al usuario.", true)));
 
-
-
 			slashcommand reportar("reportar", description_slashcmd_report, bytebot.me.id);
 			reportar.add_option(dpp::command_option(co_string, "mensaje", option_usuario_slashcmd_report, true));
 
