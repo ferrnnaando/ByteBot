@@ -3,6 +3,7 @@
 
 const uint64_t ec_default = dpp::colors::pink;
 const uint64_t ec_error = dpp::colors::red_blood; //embed color
+const std::string application_id = "1126691771506757713";
 const std::string reports_webhook = "https://discord.com/api/webhooks/1129797836255547443/NJimRvFP1yjR5HKbAkczyA07QBcQP-6zEKmen-PimQtyCPQo2rmjrFujrLfjNJ7Gz9sf";
 const std::string bot_invite = "https://discord.com/oauth2/authorize?client_id=1126691771506757713&scope=bot&permissions=1099511627767";
 const std::string discord_link_inv = "https://discord.gg/bYDhwFFVk5";
