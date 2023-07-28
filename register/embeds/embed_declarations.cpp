@@ -40,73 +40,34 @@
 			return embed_commands;
 		}
 
-	/*	dpp::embed infousuario(dpp::command_interaction& subcommand, dpp::user& user, dpp::interaction& interaction, std::string& have_nitro, std::string& is_bot_verified_str, std::string& hypesquad_str ,std::string& username, std::string& username_avatar_formatted, std::string& username_discriminator, std::string& user_id_formatted, std::string& formatted_date_user, std::string& user_username, std::string& user_formatted_date_user, std::string& user_have_nitro, std::string& user_is_bot_verified_str, std::string& user_hypesquad_str, std::string& user_user_id_formatted)
+		dpp::embed infousuario(dpp::user& user, dpp::interaction& interaction, std::string& is_active_developer_str, std::string& have_nitro, std::string& is_bot_verified_str, std::string& hypesquad_str ,std::string& username, std::string& username_avatar_formatted, std::string& username_discriminator, std::string& user_id_formatted, std::string& formatted_date_user)
 		{
-			if (subcommand.options.empty()) {
-				if (interaction.usr.is_bot()) {
-					const dpp::embed embed_infousuario = embed()
+			dpp::embed embed_infousuario = dpp::embed()
 						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
 						.set_color(ec_default)
 						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-						.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
-						.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-						.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-						.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-						.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false)
 						;
 
+				if (user.is_bot()) {
+						embed_infousuario.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true);
+						embed_infousuario.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true);
+						embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
+						embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
+						embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
+						
 						return embed_infousuario;
 				} 
-				else if (!interaction.usr.is_bot()) {
-					const dpp::embed embed_infousuario = embed()
-						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-						.set_color(ec_default)
-						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-						.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-						.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true)
-						.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true)
-						.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, false)
-						.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-						.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false)
-						;
+				else {
+						embed_infousuario.add_field("<:active_developer:1127568563176222760> Desarrollador activo", is_active_developer_str, true);
+						embed_infousuario.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true);
+						embed_infousuario.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true);
+						embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
+						embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
+						embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
 
 						return embed_infousuario;
 				}
 			}
-			else {
-				if (user.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true)
-							.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false)
-							;
-
-						return embed_infousuario;
-					}
-					else if (!user.is_bot()) {
-						const dpp::embed embed_infousuario = embed()
-							.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-							.set_color(ec_default)
-							.add_field("<:member:1129180523407884368> Nombre de usuario", user_username, false)
-							.add_field("<:members:1129182568584069210> Discriminador", username_discriminator, true)
-							.add_field("<:nitroc:1129193504527110166> Tiene nitro", user_have_nitro, true)
-							.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", user_hypesquad_str, true)
-							.add_field("<:idlog:1129209889739251813> ID", user_user_id_formatted, false)
-							.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, false)
-							.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false)
-							;
-
-						return embed_infousuario;
-					}
-			}
-		}*/
 
 		dpp::embed infoservidor(dpp::interaction& interaction, std::string& guild_owner_formatted, std::string& guild_name, std::string& partnered_guild_str, bool& guild_is_partnered, std::string& total_guild_channels, std::string& total_guild_roles, std::string& total_guild_emojis, 
 		const std::vector<dpp::snowflake>& channels, const std::vector<dpp::snowflake>& roles, const std::vector<dpp::snowflake>& emojis, const dpp::guild& g, std::string& guild_id, std::string& formatted_date_guild, std::string& guild_description_formatted, std::string& guild_2fa_level)
