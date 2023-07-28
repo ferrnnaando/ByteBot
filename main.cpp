@@ -1,7 +1,6 @@
 #include "headers/mainheader.h"
 
 #include "register/slashcommands/slashcommand_on_ready/slashcommands.h"
-#include "register/slashcommands/slashcommand_logger/logger.h"
 #include "register/buttons/on_button_click/on_button_click.h"
 #include "register/embeds/embed_declarations.h"
 #include "register/on_messages/on_messages.h"
@@ -15,12 +14,16 @@ int main(){
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
 	
+	std::ofstream bot_log("bot_log.txt");
+	std::streambuf* cout_buffer = std::cout.rdbuf();
+	std::cout.rdbuf(bot_log.rdbuf());
+	
 	bytebot.on_log(utility::cout_logger());
 
 	#ifdef __linux__
-		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Linux." << std::endl;
+		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Linux" << std::endl;
 	#elif defined(_WIN32) || defined(_WIN64)
-		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Windows." << std::endl;
+		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Windows" << std::endl;
 	#endif
 
 	 bytebot.on_ready([&bytebot](const ready_t& event) {
@@ -294,9 +297,8 @@ int main(){
 					 partnered_guild_str = "```Si.```";
 				 }
 
-				 event.reply(message(interaction.get_channel().id, infoservidor(
-																	   interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
-																	   total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
+				 event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
+				total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
 			 }
 			 else if (interaction.get_command_name() == "avatar")
 			 {
@@ -314,6 +316,7 @@ int main(){
 			 else if (interaction.get_command_name() == "banear")
 			 {
 				 dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
+				 
 
 				 if (ban_perm.has(dpp::p_ban_members) || ban_perm.has(dpp::p_administrator))
 				 {
@@ -357,7 +360,7 @@ int main(){
 
 				 else
 				 {
-					 event.reply(message(interaction.channel_id, "<:lock23:1130126354512351424> | No tienes los permisos necesarios para ejecutar ese comando.").set_flags(dpp::m_ephemeral));
+					 event.reply(message(interaction.channel_id, "<:lock23:1130126354512351424> No tienes los permisos necesarios para ejecutar ese comando.").set_flags(dpp::m_ephemeral));
 				 }
 			 }
 			 else if (interaction.get_command_name() == "reportar") {
@@ -376,6 +379,8 @@ int main(){
 		
 	});
 
-	 bytebot.start(st_wait);
-	 return 0;
+	std::cout.rdbuf(cout_buffer);
+
+	bytebot.start(st_wait);
+	return 0;
 }
