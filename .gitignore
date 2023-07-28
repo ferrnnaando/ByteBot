@@ -37,3 +37,4 @@
 .libdpp-10.0.24-win64/*
 .dotenv_library/*
 .vs/ByteBot/v17/ipch/AutoPCH/f30761ed0d9f8ee7/BYTEBOT.ipch
+bot_log.txt

@@ -79,4 +79,24 @@ void on_message_create(const dpp::message_create_t& msg, dpp::cluster& bytebot)
 				}, 5);
 			}
 		}
+		else if(msg.msg.content == devcommands_prefix + "print" && !interaction.is_dm()) {
+		// dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
+		//dpp::permission has_perms = interaction.get_resolved_permissions(interaction.author.id)->second;
+		if (interaction.author.id == bytebot_developers[0]) {
+			msg.reply(dpp::message("<:warningdisc:1129900021718982757> Esta operacion es considerada como **potencialmente peligrosa**, ¿realmente deseas ejecutarla?")
+			.add_component(dpp::component()
+			.add_component(
+				dpp::component().set_label("Continuar")
+				.set_type(cot_button)
+				.set_style(cos_danger)
+				.set_id("continue_getdown_bytebot")
+				)
+			));
+
+			bytebot.start_timer([&bytebot, &interaction](dpp::timer h) {
+				bytebot.message_delete(interaction.id, interaction.channel_id);
+				bytebot.stop_timer(h);
+				}, 5);
+			}
+		}
 	}
