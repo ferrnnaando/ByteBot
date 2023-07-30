@@ -9,32 +9,28 @@ using namespace std;
 using namespace dpp;
 
 int main(){
-    dotenv::init();
+	dotenv::init();
 	const std::string BOT_TOKEN{std::getenv("token")};
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
-	bytebot.start();
 	dpp::webhook bytebot_wh(reports_webhook);
 
 	std::ofstream bot_log("bot_log.txt");
 	std::streambuf* cout_buffer = std::cout.rdbuf();
 	std::cout.rdbuf(bot_log.rdbuf());
 
-	#ifdef __linux__
-		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Linux" << std::endl;
-	#elif defined(_WIN32) || defined(_WIN64)
-		std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Windows" << std::endl;
-	#endif
+	print_logger(bytebot);
 
-	std::cout << "[" << utility::current_date_time() << "] " << utility::bot_invite_url(application_id) << std::endl;
-	std::cout << "[" << utility::current_date_time() << "] " << bytebot.uptime().to_string() << std::endl;
+	std::cout.rdbuf(cout_buffer);
+
 	bytebot.on_log(utility::cout_logger());
 
-	bytebot.on_ready([&bytebot](const ready_t &event) { 
+	bytebot.on_ready([&bytebot](const ready_t &event) {	
 		on_ready(bytebot);
 	});
 
-	bytebot.on_message_create([&bytebot](const dpp::message_create_t &msg)
-							  { on_message_create(msg, bytebot); });
+	bytebot.on_message_create([&bytebot](const dpp::message_create_t &msg) {
+		on_message_create(msg, bytebot); 
+	});
 
 	bytebot.on_slashcommand([&bytebot, &bytebot_wh](const slashcommand_t &event) { // DO find arrays with find and end.
 		dpp::interaction interaction = event.command;
@@ -265,41 +261,82 @@ int main(){
 			}
 			else if (interaction.get_command_name() == "infoservidor")
 			{
-				std::string partnered_guild_str;
+				if(subcommand.options.empty()) {
+					std::string partnered_guild_str;
 
-				const dpp::guild &g = interaction.get_guild();
+					const dpp::guild &g = interaction.get_guild();
 
-				std::string guild_owner_formatted = "<@" + std::to_string(g.owner_id) + ">";
-				std::string guild_id = "```" + std::to_string(g.id) + "```";
-				std::string guild_name = "```" + interaction.get_guild().name + "```";
-				std::string guild_description_formatted = "```" + g.description + "```";
+					std::string guild_owner_formatted = "<@" + std::to_string(g.owner_id) + ">";
+					std::string guild_id = "```" + std::to_string(g.id) + "```";
+					std::string guild_name = "```" + interaction.get_guild().name + "```";
+					std::string guild_description_formatted = "```" + g.description + "```";
 
-				auto guild_created_at = g.get_creation_time();
-				bool guild_is_partnered = g.is_partnered();
-				std::string guild_2fa_level = "```" + std::to_string(g.mfa_level) + "```";
+					auto guild_created_at = g.get_creation_time();
+					bool guild_is_partnered = g.is_partnered();
+					std::string guild_2fa_level = "```" + std::to_string(g.mfa_level) + "```";
 
-				const std::vector<dpp::snowflake> &channels = g.channels;
-				const std::vector<dpp::snowflake> &roles = g.roles;
-				const std::vector<dpp::snowflake> &emojis = g.emojis;
+					const std::vector<dpp::snowflake> &channels = g.channels;
+					const std::vector<dpp::snowflake> &roles = g.roles;
+					const std::vector<dpp::snowflake> &emojis = g.emojis;
 
-				std::size_t channelCount = channels.size();
-				std::size_t roleCount = roles.size();
-				std::size_t emojiCount = emojis.size();
-				std::string total_guild_channels = "```" + std::to_string(channelCount) + "```";
-				std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
-				std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
+					std::size_t channelCount = channels.size();
+					std::size_t roleCount = roles.size();
+					std::size_t emojiCount = emojis.size();
+					std::string total_guild_channels = "```" + std::to_string(channelCount) + "```";
+					std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
+					std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
 
-				if (guild_is_partnered == 0)
-				{
-					partnered_guild_str = "```No.```";
+					if (guild_is_partnered == 0)
+					{
+						partnered_guild_str = "```No.```";
+					}
+					else
+					{
+						partnered_guild_str = "```Si.```";
+					}
+
+					event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
+					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
 				}
-				else
-				{
-					partnered_guild_str = "```Si.```";
-				}
+				else {
+					dpp::snowflake server_id = std::get<std::string>(event.get_parameter("id"));
 
-				event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
-				total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
+					std::string partnered_guild_str;
+
+					dpp::guild g = *find_guild(server_id¡);
+
+					std::string guild_owner_formatted = "<@" + std::to_string(g.owner_id) + ">";
+					std::string guild_id = "```" + std::to_string(g.id) + "```";
+					std::string guild_name = "```" + g.name + "```";
+					std::string guild_description_formatted = "```" + g.description + "```";
+
+					auto guild_created_at = g.get_creation_time();
+					bool guild_is_partnered = g.is_partnered();
+					std::string guild_2fa_level = "```" + std::to_string(g.mfa_level) + "```";
+
+					const std::vector<dpp::snowflake> &channels = g.channels;
+					const std::vector<dpp::snowflake> &roles = g.roles;
+					const std::vector<dpp::snowflake> &emojis = g.emojis;
+
+					std::size_t channelCount = channels.size();
+					std::size_t roleCount = roles.size();
+					std::size_t emojiCount = emojis.size();
+					std::string total_guild_channels = "```" + std::to_string(channelCount) + "```";
+					std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
+					std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
+
+					if (guild_is_partnered == 0)
+					{
+						partnered_guild_str = "```No.```";
+					}
+					else
+					{
+						partnered_guild_str = "```Si.```";
+					}
+
+					event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
+					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
+				}
 			}
 			else if (interaction.get_command_name() == "avatar")
 			{
@@ -367,8 +404,6 @@ int main(){
 		on_button_click(event, bytebot);
 	
 	});
-
-	std::cout.rdbuf(cout_buffer);
 
 	bytebot.start(st_wait);
 	return 0;
