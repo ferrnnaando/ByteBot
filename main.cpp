@@ -286,12 +286,10 @@ int main(){
 					std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
 					std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
 
-					if (guild_is_partnered == 0)
-					{
+					if (guild_is_partnered == 0) {
 						partnered_guild_str = "```No.```";
 					}
-					else
-					{
+					else {
 						partnered_guild_str = "```Si.```";
 					}
 
@@ -331,12 +329,10 @@ int main(){
 
 						std::string partnered_guild_str;
 
-						if (guild_is_partnered == 0)
-						{
+						if (guild_is_partnered == 0) {
 							partnered_guild_str = "```No.```";
 						}
-						else
-						{
+						else {
 							partnered_guild_str = "```Si.```";
 						}
 
@@ -345,8 +341,7 @@ int main(){
 					}
 				}
 			}
-			else if (interaction.get_command_name() == "avatar")
-			{
+			else if (interaction.get_command_name() == "avatar") {
 				if (subcommand.options.empty()){
 					event.reply(message(interaction.get_channel().id, avatar_embed(interaction, interaction.usr)));
 				}
@@ -400,9 +395,17 @@ int main(){
 				std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
 				std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || <@" + std::to_string(interaction.usr.id) + ">\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
 
-				bytebot.direct_message_create(1068126654368583770, report_formatted);
+				bytebot.direct_message_create(bytebot_developers[0], report_formatted);
 				bytebot.execute_webhook_sync(bytebot_wh, report_formatted);
 				event.reply(message(interaction.channel_id, "<:clydecheck:1129147137146503278> Mensaje enviado.").set_flags(ephemeral));
+			} else if (interaction.get_command_name() == "dev") {
+				if(interaction.usr.id == bytebot_developers[0]) {
+					std::string input = std::get<std::string>(event.get_parameter("input")); //?
+
+					if(input == "print") {
+
+					}
+				}
 			}
 		}
 	});
