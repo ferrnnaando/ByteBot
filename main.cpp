@@ -299,43 +299,50 @@ int main(){
 					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
 				}
 				else {
-					dpp::snowflake server_id = std::get<std::string>(event.get_parameter("id"));
-
-					std::string partnered_guild_str;
-
-					dpp::guild g = *find_guild(server_id¡);
-
-					std::string guild_owner_formatted = "<@" + std::to_string(g.owner_id) + ">";
-					std::string guild_id = "```" + std::to_string(g.id) + "```";
-					std::string guild_name = "```" + g.name + "```";
-					std::string guild_description_formatted = "```" + g.description + "```";
-
-					auto guild_created_at = g.get_creation_time();
-					bool guild_is_partnered = g.is_partnered();
-					std::string guild_2fa_level = "```" + std::to_string(g.mfa_level) + "```";
-
-					const std::vector<dpp::snowflake> &channels = g.channels;
-					const std::vector<dpp::snowflake> &roles = g.roles;
-					const std::vector<dpp::snowflake> &emojis = g.emojis;
-
-					std::size_t channelCount = channels.size();
-					std::size_t roleCount = roles.size();
-					std::size_t emojiCount = emojis.size();
-					std::string total_guild_channels = "```" + std::to_string(channelCount) + "```";
-					std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
-					std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
-
-					if (guild_is_partnered == 0)
-					{
-						partnered_guild_str = "```No.```";
+					dpp::snowflake server_id = std::get<std::string>(event.get_parameter("id"));		
+					dpp::guild* g = find_guild(server_id);
+				
+					if(std::to_string(server_id).length() <= 15 || std::to_string(server_id).length() >= 20) { //really guilds id are from 16 characters to 18, but doing this and being a string we can ensure all ids will be included and we will let a small margin error for issues
+						event.reply(message("<:warningdisc:1129900021718982757> El formato de ID no es válido, especifica un servidor correctamente.").set_flags(ephemeral));
 					}
-					else
-					{
-						partnered_guild_str = "```Si.```";
+					else if (find_guild(server_id) == nullptr) {
+						event.reply(message("<:warningdisc:1129900021718982757> ¡Ha ocurrido un error! No estoy en el servidor especificado.").set_flags(ephemeral));
 					}
+					else {
+						std::string guild_owner_formatted = "<@" + std::to_string(g->owner_id) + ">";
+						std::string guild_id = "```" + std::to_string(g->id) + "```";
+						std::string guild_name = "```" + g->name + "```";
+						std::string guild_description_formatted = "```" + g->description + "```";
 
-					event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
-					total_guild_emojis, channels, roles, emojis, g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
+						auto guild_created_at = g->get_creation_time();
+						bool guild_is_partnered = g->is_partnered();
+						std::string guild_2fa_level = "```" + std::to_string(g->mfa_level) + "```";
+
+						const std::vector<dpp::snowflake> &channels = g->channels;
+						const std::vector<dpp::snowflake> &roles = g->roles;
+						const std::vector<dpp::snowflake> &emojis = g->emojis;
+
+						std::size_t channelCount = channels.size();
+						std::size_t roleCount = roles.size();
+						std::size_t emojiCount = emojis.size();
+						std::string total_guild_channels = "```" + std::to_string(channelCount) + "```";
+						std::string total_guild_roles = "```" + std::to_string(roleCount) + "```";
+						std::string total_guild_emojis = "```" + std::to_string(emojiCount) + "```";
+
+						std::string partnered_guild_str;
+
+						if (guild_is_partnered == 0)
+						{
+							partnered_guild_str = "```No.```";
+						}
+						else
+						{
+							partnered_guild_str = "```Si.```";
+						}
+
+						event.reply(message(interaction.get_channel().id, infoservidor(interaction, guild_owner_formatted, guild_name, partnered_guild_str, guild_is_partnered, total_guild_channels, total_guild_roles,
+						total_guild_emojis, channels, roles, emojis, *g, guild_id, formatted_date_guild, guild_description_formatted, guild_2fa_level)));
+					}
 				}
 			}
 			else if (interaction.get_command_name() == "avatar")
@@ -357,7 +364,7 @@ int main(){
 					std::string member_staff = "<@" + std::to_string(interaction.usr.id) + ">";
 
 					if (std::to_string(usuario.id) == "1126691771506757713"){
-						event.reply(message(interaction.channel_id, "<:warningdisc:1129900021718982757> ¡Vaya!Parece que has intentado banearme, lamento no haber sido de tu agrado o no haber cumplido con tus expectativas, pero puedo asegurarte que logrararás más ayudando a que ByteBot mejore enviando un reporte que expulsándome.¡Animate!Será solo un momento")
+						event.reply(message(interaction.channel_id, "<:warningdisc:1129900021718982757> ¡Vaya! Parece que has intentado banearme, lamento no haber sido de tu agrado o no haber cumplido con tus expectativas, pero puedo asegurarte que logrararás más ayudando a que ByteBot mejore enviando un reporte que expulsándome.¡Animate!Será solo un momento")
 						.set_flags(dpp::m_ephemeral)
 						.add_component(dpp::component()
 							.add_component(dpp::component()

@@ -2,9 +2,17 @@
 using namespace std;
 using namespace dpp;
 
-void on_ready(dpp::cluster& bytebot) {
+void print_logger(dpp::cluster& bytebot) {
+	#ifdef __linux__
+			std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Linux" << std::endl;
+		#elif defined(_WIN32) || defined(_WIN64)
+			std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Windows" << std::endl;
+		#endif
 
-	
+		std::cout << "[" << utility::current_date_time() << "] INFO: Default OAuth2 URL is " << utility::bot_invite_url(application_id) << std::endl;
+}
+
+void on_ready(dpp::cluster& bytebot) {
 	bytebot.set_presence(presence(ps_idle, at_listening, "/bytebot en " + std::to_string(bytebot.current_user_get_guilds_sync().size()) + " servidores")); //define bot status	
 
 	
@@ -19,6 +27,7 @@ void on_ready(dpp::cluster& bytebot) {
 			infousuario.add_option(dpp::command_option(co_user, "usuario", option_slashcmd_infousuario, false));
 
 			dpp::slashcommand infoservidor("infoservidor", description_slashcmd_infoservidor, bytebot.me.id);
+			infoservidor.add_option(dpp::command_option(co_string, "id", "Muestra la informacion sobre un servidor en especifico", false));
 
 			dpp::slashcommand avatar("avatar", option_usuario_slashcmd_avatar, bytebot.me.id);
 			avatar.add_option(dpp::command_option(co_user, "usuario", description_slashcmd_avatar, false));
@@ -29,6 +38,9 @@ void on_ready(dpp::cluster& bytebot) {
 
 			slashcommand reportar("reportar", description_slashcmd_report, bytebot.me.id);
 			reportar.add_option(dpp::command_option(co_string, "mensaje", option_usuario_slashcmd_report, true));
+
+			slashcommand dev("dev", "Consola para desarolladores de ByteBot", bytebot.me.id);
+			dev.add_option(dpp::command_option(co_string, "input", "Muestra el output", true));
 
 			//########################################################################################################################
 
@@ -41,6 +53,7 @@ void on_ready(dpp::cluster& bytebot) {
 			bytebot.global_command_create(avatar);
 			bytebot.global_command_create(banear);
 			bytebot.global_command_create(reportar);
+			bytebot.global_command_create(dev);
 			//bytebot.guild_command_create(banearte);
 			//bytebot.global_bulk_command_create({ comandos, informacion, infousuario, infoservidor, avatar, banear , reportar });
 		}
