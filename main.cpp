@@ -381,9 +381,26 @@ int main(){
 						.set_color(ec_default)
 						.add_field("<:discordstuff:1129970524903190659> Responsable", member_staff, true)
 						.add_field("<:warningdisc:1129900021718982757> Motivo", ban_issue, true)
-						.set_footer(embed_footer().set_icon(interaction.usr.get_avatar_url()).set_text("Disclaimer: ByteBot no es responsable ni gestiona las sanciones que aplican los moderadores de servidores que usan ByteBot. Es de su responsabilidad informarse de la normativa vigente  de cada servidor para evitar futuras sanciones."));
+						.set_footer(
+							embed_footer()
+							.set_icon(interaction.usr.get_avatar_url())
+							.set_text("Disclaimer: ByteBot no es responsable ni gestiona las sanciones que aplican los moderadores de servidores que usan ByteBot. Es de su responsabilidad informarse de la normativa vigente  de cada servidor para evitar futuras sanciones."));
 
-					bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed_baneado).add_component(dpp::component().add_component(dpp::component().set_label("Servidor de soporte").set_style(cos_link).set_url(discord_link_inv).set_type(cot_button).set_emoji("🙌")).add_component(dpp::component().set_label("¡Invitame a tu servidor!").set_style(cos_link).set_url(bot_invite).set_type(cot_button).set_emoji("🤖"))));
+					bytebot.direct_message_create(usuario.id, message(interaction.get_channel().is_dm(), embed_baneado)
+					.add_component(dpp::component().
+						add_component(dpp::component().set_label("Servidor de soporte")
+						.set_style(cos_link).set_url(discord_link_inv)
+						.set_type(cot_button).set_emoji("🙌"))
+						.add_component(dpp::component()
+						.set_label("¡Invitame a tu servidor!")
+						.set_style(cos_link)
+						.set_url(bot_invite)
+						.set_type(cot_button)
+						.set_emoji("🤖")
+						)
+						
+						));
+
 					event.reply("<:clydecheck:1129147137146503278> El usuario ha sido baneado.");
 				}
 
@@ -404,10 +421,33 @@ int main(){
 
 					if(input == "print") {
 
+					} else if(input == "kill") {
+						// dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
+						//dpp::permission has_perms = interaction.get_resolved_permissions(interaction.author.id)->second;
+						event.reply(dpp::message("<:warningdisc:1129900021718982757> Esta operacion es considerada como **potencialmente peligrosa**, ¿realmente deseas ejecutarla?")
+						.set_flags(ephemeral)
+						.add_component(dpp::component()
+							.add_component(
+								dpp::component().set_label("Continuar")
+								.set_type(cot_button)
+								.set_style(cos_danger)
+								.set_id("continue_getdown_bytebot")
+								)
+							));
+
+						} else if(input == "usage") {
+							event.reply(dpp::message(interaction.channel_id, dev_usage_embed(bytebot)));
+						}
+						else {
+							event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe. (1)")
+							.set_flags(ephemeral));
+						}					
+					} else {
+						event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe. (0)")
+						.set_flags(ephemeral));
 					}
 				}
 			}
-		}
 	});
 
 	bytebot.on_button_click([&bytebot](const dpp::button_click_t event) {
