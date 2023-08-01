@@ -9,6 +9,7 @@ void print_logger(dpp::cluster& bytebot) {
 		#elif defined(_WIN32) || defined(_WIN64)
 			std::cout << "[" << utility::current_date_time() << "]" << " INFO: Running on Windows" << std::endl;
 		#endif
+
 		std::cout << "[" << utility::current_date_time() << "] INFO: Default OAuth2 URL is " << utility::bot_invite_url(application_id) << std::endl;
 }
 
@@ -45,6 +46,7 @@ void on_ready(dpp::cluster& bytebot) {
 		bytebot.global_command_create(banear);
 		bytebot.global_command_create(reportar);
 		bytebot.global_command_create(dev);
+		//bytebot.guild_command_create(banearte);
 		//bytebot.global_bulk_command_create({ comandos, informacion, infousuario, infoservidor, avatar, banear , reportar });
 		}
 }

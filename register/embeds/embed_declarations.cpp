@@ -123,3 +123,14 @@
 
 			return embed_avatar;
 		}
+
+		dpp::embed dev_usage_embed(dpp::cluster& bytebot)
+		{
+			const dpp::embed dev_usage_embed = dpp::embed()
+			.set_color(ec_default)
+			.set_author(bytebot.me.format_username(), "", "")
+			.add_field("RAM", "6% [0.9/16 GB]", true)
+			;
+
+			return dev_usage_embed;
+		}
