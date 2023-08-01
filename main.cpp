@@ -416,11 +416,11 @@ int main(){
 				bytebot.execute_webhook_sync(bytebot_wh, report_formatted);
 				event.reply(message(interaction.channel_id, "<:clydecheck:1129147137146503278> Mensaje enviado.").set_flags(ephemeral));
 			} else if (interaction.get_command_name() == "dev") {
-				if(interaction.usr.id == bytebot_developers[0]) {
+				// Use std::find to search for the element
+				if (std::find(std::begin(bytebot_developers), std::end(bytebot_developers), std::to_string(interaction.usr.id))) {
 					std::string input = std::get<std::string>(event.get_parameter("input")); //?
 
 					if(input == "print") {
-
 					} else if(input == "kill") {
 						// dpp::permission ban_perm = interaction.resolved.member_permissions.find(interaction.usr.id)->second;
 						//dpp::permission has_perms = interaction.get_resolved_permissions(interaction.author.id)->second;
@@ -436,14 +436,14 @@ int main(){
 							));
 
 						} else if(input == "usage") {
-							event.reply(dpp::message(interaction.channel_id, dev_usage_embed(bytebot)));
+							event.reply(dpp::message(interaction.channel_id, dev_usage_embed(bytebot, interaction)));
 						}
 						else {
 							event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe. (1)")
 							.set_flags(ephemeral));
 						}					
 					} else {
-						event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe. (0)")
+						event.reply(message("<:warningdisc:1129900021718982757> Algo salió mal.")
 						.set_flags(ephemeral));
 					}
 				}

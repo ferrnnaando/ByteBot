@@ -1,4 +1,31 @@
 #include "embed_declarations.h"
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+
+#ifdef __linux__
+
+	struct system_info {
+		std::string model_name; //cpu
+		std::string cores; //cpu
+		std::string gpu_info;
+		bool found;
+	};
+
+#elif _WIN32
+
+#endif
+
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) throw std::runtime_error("popen() failed!");
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
 
 		dpp::embed blacklist_embed(dpp::interaction& interaction)
 		{
@@ -14,6 +41,7 @@
 
 		dpp::embed bytebot_embed(dpp::interaction& interaction)
 		{
+			
 			const dpp::embed embed_bytebot = dpp::embed()
 				.set_color(ec_default)
 				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
@@ -124,12 +152,52 @@
 			return embed_avatar;
 		}
 
-		dpp::embed dev_usage_embed(dpp::cluster& bytebot)
+		dpp::embed dev_usage_embed(dpp::cluster& bytebot, dpp::interaction& interaction)
 		{
+			std::ifstream cpuinfo("/proc/cpuinfo");
+			std::string line;
+			system_info cpu;
+			system_info gpu;
+			cpu.found = false;
+
+			while (std::getline(cpuinfo, line)) {
+				size_t delimiter_pos = line.find(':');
+
+				if (line.find("model name") != std::string::npos) {
+					if (delimiter_pos != std::string::npos) {
+						cpu.model_name = line.substr(delimiter_pos + 2); // Skip ": "	
+						cpu.found = true;
+					}
+				} else if(line.find("cpu cores") != std::string::npos) { //what is npos 
+						if(delimiter_pos != std::string::npos) {
+							cpu.cores = line.substr(delimiter_pos + 2);
+						}
+					}
+			}
+
+			gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
+			std::string formated_ram = "```6% [0.9 / 16 GB]```";
+			std::string formated_cpu;
+			std::string formated_gpu;
+
+			if(cpu.found) {
+				formated_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
+			} else {
+				formated_cpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+			}
+
+			if(!gpu.gpu_info.empty()) {
+				formated_gpu = "```" + gpu.gpu_info + "```";
+			} else {
+				formated_gpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+			}
+			
 			const dpp::embed dev_usage_embed = dpp::embed()
-			.set_color(ec_default)
-			.set_author(bytebot.me.format_username(), "", "")
-			.add_field("RAM", "6% [0.9/16 GB]", true)
+			.set_color(ec_slashcmd_devusage)
+			.set_author(interaction.get_guild().name, bot_invite, interaction.get_guild().get_icon_url())
+			.add_field("<:nvidia:1136047715483132084> Informacion de la GPU", formated_gpu, false)
+			.add_field("<:intel:1136064422801068135> Informacion del procesador", formated_cpu, false)
+			.add_field("<:ram:1136066444468179024> Uso de ram", formated_ram, true)
 			;
 
 			return dev_usage_embed;
