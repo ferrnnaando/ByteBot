@@ -19,8 +19,8 @@ void term_bytebot_command(const dpp::button_click_t& event) {
 			}*/
 }
 #elif _WIN32
-	void term_bytebot_command(const dpp::button_click_t& event) {
-		std::cout << "windows is gay damn!";
+	void term_bytebot_command(){
+		ExitProcess(0);
 	}
 #endif
 
@@ -40,7 +40,7 @@ void on_button_click(const dpp::button_click_t& event, dpp::cluster& bytebot)
 		));
 	}
 	else if (event.custom_id == "continue_ban_bot_id") {
-		event.reply(dpp::message(event.command.channel_id, "<:warningdisc:1129900021718982757> Está bien... Si así lo deseas, vuelve a ejecutar el comando para banearme.").set_flags(dpp::m_ephemeral));
+		event.reply(dpp::message(event.command.channel_id, "<:warningdisc:1129900021718982757> Está bien... Si así lo deseas, adios.").set_flags(dpp::m_ephemeral));
 	}
 	else if(event.custom_id == "continue_getdown_bytebot") {
 		if (std::find(std::begin(bytebot_developers), std::end(bytebot_developers), std::to_string(interaction.usr.id))) {
