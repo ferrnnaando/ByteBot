@@ -18,17 +18,15 @@ void term_bytebot_command(const dpp::button_click_t& event) {
 	}*/
 }
 #elif _WIN32
-	void term_bytebot_command(){
+	void term_bytebot_command(const dpp::button_click_t& event){
 		event.reply("<:warningdisc:1129900021718982757> El bot ha sido apagado con éxito."); 
 		
 		if(ExitProcess(0)) {
-
 		} else {
 			event.reply("<:warningdisc:1129900021718982757> Hubo un error intentando apagar el bot, revisa la consola."); 
 		}
 	}
 #endif
-
 
 void on_button_click(const dpp::button_click_t& event, dpp::cluster& bytebot)
 {
