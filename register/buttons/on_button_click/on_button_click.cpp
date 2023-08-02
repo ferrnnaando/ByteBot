@@ -9,7 +9,6 @@ void term_bytebot_command(const dpp::button_click_t& event) {
 
 	if (reload == 0 || false) {
 			event.reply("<:warningdisc:1129900021718982757> Hubo un error intentando apagar el bot, revisa la consola con `##print`"); 
-			std::cout << "There was an error trying to doing the command. Please check output"; 
 	}
 	/*else {
 		const char *init_command = "bash scripts/build.sh main";
@@ -23,7 +22,9 @@ void term_bytebot_command(const dpp::button_click_t& event) {
 		event.reply("<:warningdisc:1129900021718982757> El bot ha sido apagado con éxito."); 
 		
 		if(ExitProcess(0)) {
-			
+
+		} else {
+			event.reply("<:warningdisc:1129900021718982757> Hubo un error intentando apagar el bot, revisa la consola."); 
 		}
 	}
 #endif
