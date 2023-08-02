@@ -274,7 +274,7 @@ std::string exec(const char* cmd) {
 		std::string info_os;
 			
 		std::string ram_usage;
-		if(!cpu.found_cpu.empty()) { //is this a good way to check true or is better a cpu.found_cpu
+		if(cpu.found_cpu) { //is this a good way to check true or is better a cpu.found_cpu
 				info_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
 		} else {
 			info_cpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
@@ -286,13 +286,13 @@ std::string exec(const char* cmd) {
 			info_gpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
 
-		if(!ram.found_ram.empty())  {
+		if(ram.found_ram)  {
 			ram_usage = ram.ram_percent + " [" + ram.ram_used + " / " + ram.ram_total + "]```";
 		} else {
 			ram_usage = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
-		if(!os.found_os.empty()) {
-			info_os = "```" + os.os_model + " || " + .os_name + "```";
+		if(os.found_os) {
+			info_os = "```" + os.os_model + " || " + os.os_name + "```";
 		} else {
 			info_os = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
@@ -302,7 +302,7 @@ std::string exec(const char* cmd) {
 		long long totalTime = info.idle + info.user + info.nice + info.system + info.irq + info.softirq + info.steal;
 		double percent_cpu_usage = (totalTime > 0) ? (double(totalTime - totalIdleTime) / totalTime) * 100.0 : 0.0;
 
-		std::string formated_consum = "```CPU: " + percent_cpu_usage + "\n RAM: " + ram_usage + "```";
+		std::string formated_consum = "```CPU: " + std::to_string(percent_cpu_usage) + " %\n RAM: " + ram_usage + "```";
 
 		const dpp::embed dev_usage_embed = dpp::embed()
 			.set_color(ec_slashcmd_devusage)
