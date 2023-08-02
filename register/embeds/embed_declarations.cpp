@@ -1,19 +1,30 @@
 #include "embed_declarations.h"
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
 
 #ifdef __linux__
+
+	#include <cstdio>
+	#include <memory>
+	#include <stdexcept>
+	#include <sys/sysinfo.h>
 
 	struct system_info {
 		std::string model_name; //cpu
 		std::string cores; //cpu
-		std::string gpu_info;
-		bool found;
-	};
+		std::string gpu_info; //gpu
+		std::string ram_total; //ram
+		std::string ram_used; //ram
+		float ram_percent; //ram
+		long ram_total_literal; //ram
+		long memav_value; //ram
+		std::string os_name; //os info
+		std::string os_model = "Linux"; //os info
 
-#elif _WIN32
-
+		bool found_cpu, found_gpu, found_ram, found_os;
+	}; 
+	struct sysinfo system_info2;
+	
+	#elif _WIN32
+		struct system_info std::string os_model = "Windows";
 #endif
 
 std::string exec(const char* cmd) {
@@ -71,29 +82,29 @@ std::string exec(const char* cmd) {
 		dpp::embed infousuario(dpp::user& user, dpp::interaction& interaction, std::string& is_active_developer_str, std::string& have_nitro, std::string& is_bot_verified_str, std::string& hypesquad_str ,std::string& username, std::string& username_avatar_formatted, std::string& username_discriminator, std::string& user_id_formatted, std::string& formatted_date_user)
 		{
 			dpp::embed embed_infousuario = dpp::embed()
-						.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
-						.set_color(ec_default)
-						.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
-						;
+				.set_author(interaction.get_guild().name, discord_link_inv, interaction.get_guild().get_icon_url())
+				.set_color(ec_default)
+				.add_field("<:member:1129180523407884368> Nombre de usuario", username, false)
+				;
 
 				if (user.is_bot()) {
-						embed_infousuario.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true);
-						embed_infousuario.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true);
-						embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
-						embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
-						embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
-						
-						return embed_infousuario;
+					embed_infousuario.add_field("<:slashcmd:1129193506787840091> Es un bot", "```Sí.```", true);
+					embed_infousuario.add_field("<:slashcmd:1129193506787840091> Bot verificado", is_bot_verified_str, true);
+					embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
+					embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
+					embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
+					
+					return embed_infousuario;
 				} 
 				else {
-						embed_infousuario.add_field("<:active_developer:1127568563176222760> Desarrollador activo", is_active_developer_str, true);
-						embed_infousuario.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true);
-						embed_infousuario.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true);
-						embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
-						embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
-						embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
+					embed_infousuario.add_field("<:active_developer:1127568563176222760> Desarrollador activo", is_active_developer_str, true);
+					embed_infousuario.add_field("<:nitroc:1129193504527110166> Tiene nitro", have_nitro, true);
+					embed_infousuario.add_field("<:hypesquadevents:1129203280216600638> HypeSquad", hypesquad_str, true);
+					embed_infousuario.add_field("<:idlog:1129209889739251813> ID", user_id_formatted, true);
+					embed_infousuario.add_field("<:joined:1129241382930894859> Se unió a discord el", formatted_date_user, true);
+					embed_infousuario.add_field("<:preview:1129409265715642399> Avatar", username_avatar_formatted, false);
 
-						return embed_infousuario;
+					return embed_infousuario;
 				}
 			}
 
@@ -154,11 +165,15 @@ std::string exec(const char* cmd) {
 
 		dpp::embed dev_usage_embed(dpp::cluster& bytebot, dpp::interaction& interaction)
 		{
-			std::ifstream cpuinfo("/proc/cpuinfo");
-			std::string line;
+
 			system_info cpu;
 			system_info gpu;
-			cpu.found = false;
+			system_info ram;
+			system_info os;
+			std::string line, line2, line3;
+			std::ifstream cpuinfo("/proc/cpuinfo");
+			
+			cpu.found_cpu = false;
 
 			while (std::getline(cpuinfo, line)) {
 				size_t delimiter_pos = line.find(':');
@@ -166,7 +181,7 @@ std::string exec(const char* cmd) {
 				if (line.find("model name") != std::string::npos) {
 					if (delimiter_pos != std::string::npos) {
 						cpu.model_name = line.substr(delimiter_pos + 2); // Skip ": "	
-						cpu.found = true;
+						cpu.found_cpu = true;
 					}
 				} else if(line.find("cpu cores") != std::string::npos) { //what is npos 
 						if(delimiter_pos != std::string::npos) {
@@ -175,30 +190,128 @@ std::string exec(const char* cmd) {
 					}
 			}
 
-			gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
-			std::string formated_ram = "```6% [0.9 / 16 GB]```";
-			std::string formated_cpu;
-			std::string formated_gpu;
+			std::ifstream ram_info("/proc/meminfo");
+			ram.found_ram = false;
 
-			if(cpu.found) {
-				formated_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
-			} else {
-				formated_cpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
-			}
+			while(std::getline(ram_info, line2)) {
+   			 size_t delimiter_pos = line2.find(':');
 
-			if(!gpu.gpu_info.empty()) {
-				formated_gpu = "```" + gpu.gpu_info + "```";
-			} else {
-				formated_gpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+			if (line2.find("MemTotal") != std::string::npos) {
+				if (delimiter_pos != std::string::npos) {
+					ram.found_ram = true;
+					std::istringstream iss(line2);
+					std::string memtotal_identifier;
+					long memtotal_value;
+
+					iss >> memtotal_identifier >> memtotal_value;
+					ram.ram_total_literal = memtotal_value;
+
+					if (memtotal_value > 1000000) {
+						int value_gb = memtotal_value / 1048576;
+						ram.ram_total = std::to_string(value_gb) + " GB";
+					} else {
+						int value_mb = memtotal_value / 1024;
+						ram.ram_total = std::to_string(value_mb) + " MB";
+					}
+				}
+			} else if (line2.find("MemFree") != std::string::npos) {
+				if (delimiter_pos != std::string::npos) {
+					std::istringstream iss(line2);
+					std::string memfree_identifier;
+					long memfree_value;
+
+					iss >> memfree_identifier >> memfree_value;
+					long memused_identifier = ram.ram_total_literal - memfree_value;
+
+					if (memused_identifier > 1000000) {
+						float total = memused_identifier / 1048576;
+						ram.ram_used = std::to_string(total) + " GB";
+					} else {
+						float total = memused_identifier / 1024;
+						ram.ram_used = std::to_string(total) + " MB";
+					}
+				}
+			} else if (line2.find("MemAvailable") != std::string::npos) {
+				if (delimiter_pos != std::string::npos) {
+					std::istringstream iss(line2);
+					std::string memav_identifier;
+					long memav_value;
+
+					iss >> memav_identifier >> memav_value;
+
+					long memused_identifier = ram.ram_total_literal - memav_value;
+					ram.ram_percent = (memused_identifier / ram.ram_total_literal) * 100.0;
+					//ram.ram_percent = ram_percent;
+					if (memused_identifier > 1000000) {
+						float total = memused_identifier / 1048576;
+						ram.ram_used = std::to_string(total) + " GB";
+					} else {
+						float total = memused_identifier / 1024;
+						ram.ram_used = std::to_string(total) + " MB";
+					}
+
+					if(ram.ram_percent)
+				}
 			}
+		}
+
+		std::ifstream osname("/etc/os-release");
+		os.found_os = false;
+
+		//if(osname.is_open()) {
+			while(std::getline(osname, line3)) {
+				if(line3.find("PRETTY_NAME=") != std::string::npos) {
+					os.found_os = true;
+					os.os_name = line3.substr(line3.find("=") + 1);
+				}
+			}
+		//}
+		
+		gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
+		
+		std::string info_cpu;
+		std::string info_gpu;
+		std::string info_os;
 			
-			const dpp::embed dev_usage_embed = dpp::embed()
+		std::string ram_usage;
+		if(!cpu.found_cpu.empty()) { //is this a good way to check true or is better a cpu.found_cpu
+				info_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
+		} else {
+			info_cpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+		}
+
+		if(!gpu.gpu_info.empty()) {
+			info_gpu = "```" + gpu.gpu_info + "```";
+		} else {
+			info_gpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+		}
+
+		if(!ram.found_ram.empty())  {
+			ram_usage = ram.ram_percent + " [" + ram.ram_used + " / " + ram.ram_total + "]```";
+		} else {
+			ram_usage = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+		}
+		if(!os.found_os.empty()) {
+			info_os = "```" + os.os_model + " || " + .os_name + "```";
+		} else {
+			info_os = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+		}
+
+		sysinfo(&system_info2);
+		long long totalIdleTime = info.idle;
+		long long totalTime = info.idle + info.user + info.nice + info.system + info.irq + info.softirq + info.steal;
+		double percent_cpu_usage = (totalTime > 0) ? (double(totalTime - totalIdleTime) / totalTime) * 100.0 : 0.0;
+
+		std::string formated_consum = "```CPU: " + percent_cpu_usage + "\n RAM: " + ram_usage + "```";
+
+		const dpp::embed dev_usage_embed = dpp::embed()
 			.set_color(ec_slashcmd_devusage)
 			.set_author(interaction.get_guild().name, bot_invite, interaction.get_guild().get_icon_url())
-			.add_field("<:nvidia:1136047715483132084> Informacion de la GPU", formated_gpu, false)
-			.add_field("<:intel:1136064422801068135> Informacion del procesador", formated_cpu, false)
-			.add_field("<:ram:1136066444468179024> Uso de ram", formated_ram, true)
+			.add_field("<:nvidia:1136047715483132084> Informacion de la GPU", info_gpu, false)
+			.add_field("<:intel:1136064422801068135> Informacion del procesador", info_cpu, false)
+			.add_field("<:infopng:1136304396536402061> Informacion del sistema", info_os, false)
+			.add_field("<:ram:1136066444468179024> Consumo", formated_consum, true)
 			;
 
-			return dev_usage_embed;
+		return dev_usage_embed;
 		}
