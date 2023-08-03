@@ -6,6 +6,7 @@
 	#include <memory>
 	#include <stdexcept>
 	#include <sys/sysinfo.h>
+	#include <sys/statvfs.h>
 	#include <iomanip>
 
 	struct system_info {
@@ -19,9 +20,13 @@
 		long memav_value; //ram
 		std::string os_name; //os info
 		std::string os_model = "Linux"; //os info
+		std::string disk_usage; //disk info
+		std::string network_usage; //network info
 
 		bool found_cpu, found_gpu, found_ram, found_os;
 	};
+
+	struct statvfs buffer;
 
 	double calculateCpuUsage(unsigned long long& prevIdle, unsigned long long& prevTotal) {
 		std::ifstream statFile("/proc/stat");
@@ -191,7 +196,22 @@ std::string exec(const char* cmd) {
 			system_info gpu;
 			system_info ram;
 			system_info os;
+			system_info disk;
+			system_info network;
 			std::string line, line2, line3;
+
+			
+			std::string info_cpu;
+			std::string info_gpu;
+			std::string info_os;
+			std::string info_ram;
+			std::string ram_usage;
+			std::string formated_consum;
+			std::string formated_bot_status;
+			std::string status_title;
+			std::string formated_disk_usage;
+			std::string formated_network_usage;
+
 			std::ifstream cpuinfo("/proc/cpuinfo");
 			
 			cpu.found_cpu = false;
@@ -289,26 +309,17 @@ std::string exec(const char* cmd) {
 						if (start_pos != std::string::npos && end_pos != std::string::npos) {
 							os_name = os_name.substr(start_pos, end_pos - start_pos + 1);
 						}
-                // Assign the cleaned os_name to the os.os_name
+
                 os.os_name = os_name;
             }
         }
     }
 		os.found_os = true;
 
-
-		//}
-		
 		gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
-		
-		std::string info_cpu;
-		std::string info_gpu;
-		std::string info_os;
-		std::string info_ram;
-			
-		std::string ram_usage;
+
 		if(cpu.found_cpu) { //is this a good way to check true or is better a cpu.found_cpu
-				info_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
+			info_cpu = "```Modelo: " + cpu.model_name + " || Núcleos: " + cpu.cores + " ```";
 		} else {
 			info_cpu = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
@@ -320,9 +331,14 @@ std::string exec(const char* cmd) {
 		}
 
 		if(ram.found_ram)  {
-			ram_usage = std::to_string(ram.ram_percent) + " [" + std::to_string(ram.ram_used) + " / " + std::to_string(ram.ram_total) + "]```";
+			std::ostringstream ram_percentStream, ram_usedStream, ram_totalStream;
+			ram_percentStream << std::fixed << std::setprecision(2) << ram.ram_percent;
+			ram_usedStream << std::fixed << std::setprecision(2) << ram.ram_used;
+			ram_totalStream << std::fixed << std::setprecision(2) << ram.ram_total;
+
+			ram_usage = ram_percentStream.str() + "% [" + ram_usedStream.str() + " / " + ram_totalStream.str() + " GB]"; //should add dynamic memory value
 		} else {
-			ram_usage = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
+			ram_usage = "Se está ejecutando en un sistema operativo no preparado para esta función.";
 		}
 		if(os.found_os) {
 			info_os = "```" + os.os_model + " || " + os.os_name + "```";
@@ -332,23 +348,50 @@ std::string exec(const char* cmd) {
 
 		unsigned long long prevIdle = 0;
 		unsigned long long prevTotal = 0;
-
-
 		double cpuUsage = calculateCpuUsage(prevIdle, prevTotal);
-
 		std::ostringstream cpuStream;
-		cpuStream << std::fixed << std::setprecision(2) << cpuUsage; 
-		std::string cpu_usage_decimal = cpuStream.str();
+		cpuStream << std::fixed << std::setprecision(2) << cpuUsage;
 
-		std::string formated_consum = "```CPU: " + cpu_usage_decimal + " %\n RAM: " + ram_usage + "```";
+		formated_consum = "```CPU: " + cpuStream.str() + "% \nRAM: " + ram_usage + " ```";
 
-		const dpp::embed dev_usage_embed = dpp::embed()
+		if(cpuUsage < 50) {
+			status_title = "<:greendot:1129182356046094367> Estado";
+			formated_bot_status = "```Eficiente.```";
+		} 
+		else if(cpuUsage > 50) {
+			status_title = "<:yellowdot:1136657266964189236> Estado";
+			formated_bot_status = "```Carga moderada.```";
+		} 
+		else if(cpuUsage > 70) {
+			status_title = "<:greendot:1136657264615366686> Estado";
+			formated_bot_status = "```Carga alta.```";
+		} 
+		else if(cpuUsage > 90) {
+			status_title = "<:reddot:1136657261708705815> Estado";
+			formated_bot_status = " ```Sobrecarga / carga excesiva.```";
+		} else {
+			status_title = "<a:statuscharge:1136657270332199073> Estado";
+			formated_bot_status = " ```No reconocido.```";
+		}
+	
+		disk.disk_usage = exec("df -h /");
+		formated_disk_usage = "```" + disk.disk_usage + "```";
+
+		network.network_usage = exec("ip -4 addr show $(ip -4 route get 8.8.8.8 | awk '{print $5}')");
+		formated_network_usage = "```" + network.network_usage + "```";
+
+		dpp::embed dev_usage_embed = dpp::embed()
 			.set_color(ec_slashcmd_devusage)
 			.set_author(interaction.get_guild().name, bot_invite, interaction.get_guild().get_icon_url())
+			.add_field("<:good_wifi:1136678307799240774> Red", formated_network_usage, false)
+			.add_field("<:isofile:1136667867870396447> Particiones", formated_disk_usage, false)
 			.add_field("<:nvidia:1136047715483132084> Informacion de la GPU", info_gpu, false)
-			.add_field("<:intel:1136064422801068135> Informacion del procesador", info_cpu, false)
-			.add_field("<:infopng:1136304396536402061> Informacion del sistema", info_os, false)
+			.add_field("<:intel:1136064422801068135> Informacion del procesador", info_cpu, true)
+			.add_field("<:infopng:1136304396536402061> Informacion del sistema", info_os, true)
+			.add_field("", "", false)
+			.add_field(status_title, formated_bot_status, true)
 			.add_field("<:ram:1136066444468179024> Consumo", formated_consum, true)
+			
 			;
 
 		return dev_usage_embed;

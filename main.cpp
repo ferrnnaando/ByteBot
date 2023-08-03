@@ -439,7 +439,7 @@ int main(){
 							event.reply(dpp::message(interaction.channel_id, dev_usage_embed(bytebot, interaction)));
 						}
 						else {
-							event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe. (1)")
+							event.reply(message("<:warningdisc:1129900021718982757> El comando introducido no existe.")
 							.set_flags(ephemeral));
 						}					
 					} else {
