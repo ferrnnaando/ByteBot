@@ -2,8 +2,8 @@
 #include "dpp/dpp.h"
 
 enum flags {
-	ephemeral = dpp::m_ephemeral//,
-	//label = dpp::component().set_label("test")
+	ephemeral = dpp::m_ephemeral,
+	label(std::string text) = dpp::component().set_label(text)
 };
 
 const uint64_t ec_default = dpp::colors::pink;
@@ -23,16 +23,23 @@ const std::string bytebot_developers[1] = { "1068126654368583770"};
 const std::string devcommands_prefix = "###";
 //const dpp::guild* g = dpp::find_guild(blacklisted_servers[0]);
 
-const std::string option_usuario_slashcmd_report = "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibicìón";
-const std::string description_slashcmd_report = "Envia un mensaje de error o queja de forma directa al desarrollador de ByteBot";
+const std::string description_slashcmd_report = "Envia un mensaje a los desarrolladores, un uso inpropio conlleva la prohibicìón";
+const std::string option_slashcmd_report = "Especifica el mensaje que deseas enviar.";
 
-const std::string description_slashcmd_ban = "Banea a un usuario del servidor";
-const std::string option_usuario_slashcmd_ban = "Banea a un usuario del servidor";
-
-const std::string description_slashcmd_avatar = "Usuario del que mostrar su foto de perfil.";
-const std::string option_usuario_slashcmd_avatar = "Muestra la foto de perfil de alguien.";
+const std::string description_slashcmd_avatar = "Muestra tu foto de perfil.";
+const std::string option_slashcmd_avatar = "Usuario del que mostrar su foto de perfil.";
 
 const std::string description_slashcmd_infousuario = "Muestra toda la información a mi disposición sobre un usuario.";
 const std::string option_slashcmd_infousuario = "Usuario del que quieras saber mas.";
 
 const std::string description_slashcmd_infoservidor = "Muestra toda la información a mi disposición sobre el servidor en el que se ejecuta el comando";
+const std::string option_slashcmd_infoservidor = "Muestra la informacion sobre un servidor en especifico";
+
+const std::string description_slashcmd_banear = "Banea a un usuario del servidor";
+const std::string option_slashcmd_banear = "Especifica al usuario que deseas banear.";
+const std::string option2_slashcmd_infoservidor = "Especifica un motivo por el que banear al usuario.";
+
+const std::string description_slashcmd_admin = "Comando destinado a los administradores y moderadores de comunidades.";
+
+const std::string description_slashcmd_dev = "Consola para desarolladores de ByteBot";
+const std::string option_slashcmd_dev = "Muestra el output";
