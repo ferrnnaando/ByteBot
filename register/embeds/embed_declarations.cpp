@@ -6,22 +6,43 @@
 	#include <memory>
 	#include <stdexcept>
 	#include <sys/sysinfo.h>
+	#include <iomanip>
 
 	struct system_info {
 		std::string model_name; //cpu
 		std::string cores; //cpu
 		std::string gpu_info; //gpu
-		std::string ram_total; //ram
-		std::string ram_used; //ram
-		float ram_percent; //ram
+		double ram_total; //ram
+		double ram_used; //ram
+		double ram_percent; //ram
 		long ram_total_literal; //ram
 		long memav_value; //ram
 		std::string os_name; //os info
 		std::string os_model = "Linux"; //os info
 
 		bool found_cpu, found_gpu, found_ram, found_os;
-	}; 
-	struct sysinfo system_info2;
+	};
+
+	double calculateCpuUsage(unsigned long long& prevIdle, unsigned long long& prevTotal) {
+		std::ifstream statFile("/proc/stat");
+		std::string line4;
+		unsigned long long user, nice, system, idle, iowait, irq, softirq, steal;
+
+		if (std::getline(statFile, line4)) {
+			std::istringstream iss(line4);
+			std::string cpuLabel;
+			iss >> cpuLabel >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal;
+		}
+
+		unsigned long long total = user + nice + system + idle + iowait + irq + softirq + steal;
+		unsigned long long totalDiff = total - prevTotal;
+		unsigned long long idleDiff = idle - prevIdle;
+		double cpu_usage = (totalDiff > 0) ? (1.0 - static_cast<double>(idleDiff) / totalDiff) * 100.0 : 0.0;
+		prevTotal = total;
+		prevIdle = idle;
+
+    return cpu_usage;
+}
 	
 	#elif _WIN32
 		struct system_info std::string os_model = "Windows";
@@ -207,28 +228,28 @@ std::string exec(const char* cmd) {
 					ram.ram_total_literal = memtotal_value;
 
 					if (memtotal_value > 1000000) {
-						int value_gb = memtotal_value / 1048576;
-						ram.ram_total = std::to_string(value_gb) + " GB";
+						 double value_gb = static_cast<double>(memtotal_value) / (1024.0 * 1024.0);
+						ram.ram_total = value_gb;
 					} else {
-						int value_mb = memtotal_value / 1024;
-						ram.ram_total = std::to_string(value_mb) + " MB";
+						double value_mb = static_cast<double>(memtotal_value) / 1024.0;
+						ram.ram_total = value_mb;
 					}
 				}
 			} else if (line2.find("MemFree") != std::string::npos) {
 				if (delimiter_pos != std::string::npos) {
 					std::istringstream iss(line2);
 					std::string memfree_identifier;
-					long memfree_value;
+					double memfree_value;
 
 					iss >> memfree_identifier >> memfree_value;
-					long memused_identifier = ram.ram_total_literal - memfree_value;
+					double memused_identifier = ram.ram_total_literal - memfree_value;
 
 					if (memused_identifier > 1000000) {
-						float total = memused_identifier / 1048576;
-						ram.ram_used = std::to_string(total) + " GB";
+						double total = static_cast<double>(memused_identifier) / (1024.0 * 1024.0);
+						ram.ram_used = total;
 					} else {
-						float total = memused_identifier / 1024;
-						ram.ram_used = std::to_string(total) + " MB";
+						double total = static_cast<double>(memused_identifier) / 1024.0;
+						ram.ram_used = total;
 					}
 				}
 			} else if (line2.find("MemAvailable") != std::string::npos) {
@@ -239,18 +260,10 @@ std::string exec(const char* cmd) {
 
 					iss >> memav_identifier >> memav_value;
 
-					long memused_identifier = ram.ram_total_literal - memav_value;
+					double memused_identifier = ram.ram_total_literal - memav_value;
 					ram.ram_percent = (memused_identifier / ram.ram_total_literal) * 100.0;
 					//ram.ram_percent = ram_percent;
-					if (memused_identifier > 1000000) {
-						float total = memused_identifier / 1048576;
-						ram.ram_used = std::to_string(total) + " GB";
-					} else {
-						float total = memused_identifier / 1024;
-						ram.ram_used = std::to_string(total) + " MB";
-					}
-
-					if(ram.ram_percent)
+					//if(ram.ram_percent)
 				}
 			}
 		}
@@ -260,11 +273,30 @@ std::string exec(const char* cmd) {
 
 		//if(osname.is_open()) {
 			while(std::getline(osname, line3)) {
-				if(line3.find("PRETTY_NAME=") != std::string::npos) {
-					os.found_os = true;
-					os.os_name = line3.substr(line3.find("=") + 1);
-				}
-			}
+				size_t pos;
+				while ((pos = line.find("\"")) != std::string::npos) {
+					line.erase(pos, 1);
+       			}
+
+				if(line3.find("PRETTY_NAME") != std::string::npos) {
+					bool found_os_name = true;
+					std::string delimiter = "=";
+					size_t delimiter_pos = line3.find(delimiter);
+					if (delimiter_pos != std::string::npos) {
+						std::string os_name = line3.substr(delimiter_pos + delimiter.length());
+						size_t start_pos = os_name.find_first_not_of(" \"");
+						size_t end_pos = os_name.find_last_not_of(" \"");
+						if (start_pos != std::string::npos && end_pos != std::string::npos) {
+							os_name = os_name.substr(start_pos, end_pos - start_pos + 1);
+						}
+                // Assign the cleaned os_name to the os.os_name
+                os.os_name = os_name;
+            }
+        }
+    }
+		os.found_os = true;
+
+
 		//}
 		
 		gpu.gpu_info = exec("lspci | grep -E 'VGA|3D'");
@@ -272,6 +304,7 @@ std::string exec(const char* cmd) {
 		std::string info_cpu;
 		std::string info_gpu;
 		std::string info_os;
+		std::string info_ram;
 			
 		std::string ram_usage;
 		if(cpu.found_cpu) { //is this a good way to check true or is better a cpu.found_cpu
@@ -287,7 +320,7 @@ std::string exec(const char* cmd) {
 		}
 
 		if(ram.found_ram)  {
-			ram_usage = ram.ram_percent + " [" + ram.ram_used + " / " + ram.ram_total + "]```";
+			ram_usage = std::to_string(ram.ram_percent) + " [" + std::to_string(ram.ram_used) + " / " + std::to_string(ram.ram_total) + "]```";
 		} else {
 			ram_usage = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
@@ -297,12 +330,17 @@ std::string exec(const char* cmd) {
 			info_os = "```Se está ejecutando en un sistema operativo no preparado para esta función.```";
 		}
 
-		sysinfo(&system_info2);
-		long long totalIdleTime = info.idle;
-		long long totalTime = info.idle + info.user + info.nice + info.system + info.irq + info.softirq + info.steal;
-		double percent_cpu_usage = (totalTime > 0) ? (double(totalTime - totalIdleTime) / totalTime) * 100.0 : 0.0;
+		unsigned long long prevIdle = 0;
+		unsigned long long prevTotal = 0;
 
-		std::string formated_consum = "```CPU: " + std::to_string(percent_cpu_usage) + " %\n RAM: " + ram_usage + "```";
+
+		double cpuUsage = calculateCpuUsage(prevIdle, prevTotal);
+
+		std::ostringstream cpuStream;
+		cpuStream << std::fixed << std::setprecision(2) << cpuUsage; 
+		std::string cpu_usage_decimal = cpuStream.str();
+
+		std::string formated_consum = "```CPU: " + cpu_usage_decimal + " %\n RAM: " + ram_usage + "```";
 
 		const dpp::embed dev_usage_embed = dpp::embed()
 			.set_color(ec_slashcmd_devusage)
