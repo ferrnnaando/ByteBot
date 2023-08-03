@@ -200,7 +200,6 @@ std::string exec(const char* cmd) {
 			system_info network;
 			std::string line, line2, line3;
 
-			
 			std::string info_cpu;
 			std::string info_gpu;
 			std::string info_os;
@@ -211,6 +210,7 @@ std::string exec(const char* cmd) {
 			std::string status_title;
 			std::string formated_disk_usage;
 			std::string formated_network_usage;
+			std::string formated_uptime;
 
 			std::ifstream cpuinfo("/proc/cpuinfo");
 			
@@ -380,6 +380,8 @@ std::string exec(const char* cmd) {
 		network.network_usage = exec("ip -4 addr show $(ip -4 route get 8.8.8.8 | awk '{print $5}')");
 		formated_network_usage = "```" + network.network_usage + "```";
 
+		formated_uptime = "```" + bytebot.uptime().to_string() + "```";
+
 		dpp::embed dev_usage_embed = dpp::embed()
 			.set_color(ec_slashcmd_devusage)
 			.set_author(interaction.get_guild().name, bot_invite, interaction.get_guild().get_icon_url())
@@ -389,6 +391,7 @@ std::string exec(const char* cmd) {
 			.add_field("<:intel:1136064422801068135> Informacion del procesador", info_cpu, true)
 			.add_field("<:infopng:1136304396536402061> Informacion del sistema", info_os, true)
 			.add_field("", "", false)
+			.add_field("<:publicguild:1129249322228264960> Tiempo en linea", formated_uptime, true)
 			.add_field(status_title, formated_bot_status, true)
 			.add_field("<:ram:1136066444468179024> Consumo", formated_consum, true)
 			
