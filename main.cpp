@@ -14,14 +14,7 @@ int main(){
 	dpp::cluster bytebot(BOT_TOKEN, dpp::i_default_intents | dpp::i_message_content);
 	dpp::webhook bytebot_wh(reports_webhook);
 
-	std::ofstream bot_log("bot_log.txt");
-	std::streambuf* cout_buffer = std::cout.rdbuf();
-	std::cout.rdbuf(bot_log.rdbuf());
-
 	print_logger(bytebot);
-
-	std::cout.rdbuf(cout_buffer);
-
 	bytebot.on_log(utility::cout_logger());
 
 	bytebot.on_ready([&bytebot](const ready_t &event) {	
@@ -53,13 +46,13 @@ int main(){
 		std::strftime(buffer_user, sizeof(buffer_user), "%Y-%m-%d a las %H:%M:%S horas.", fecha_hora_user);
 		std::string formatted_date_user = "```" + std::string(buffer_user) + "```";
 
-		if (interaction.usr.id == blacklisted_users[0] || interaction.usr.id == blacklisted_users[1])
-		{
+		//auto search = std::find(std::begin(blacklisted_users), std::end(blacklisted_users), std::to_string(interaction.usr.id));
+
+		if (std::find(std::begin(blacklisted_users), std::end(blacklisted_users), std::to_string(interaction.usr.id)) != std::end(blacklisted_users))	{
 			std::cout << "[" + utility::current_date_time() + "] - " << interaction.usr.username << " || Intento ejecutar un comando, pero su ID se encuentra prohibida del uso de ByteBot." << std::endl;
 			event.reply(dpp::message(event.command.get_channel().id, blacklist_embed(interaction)).set_flags(ephemeral));
 		}
-		else
-		{
+		else {
 			if (interaction.get_command_name() == "informacion")
 			{
 				event.reply(dpp::message(interaction.get_channel().id, bytebot_embed(interaction)).set_flags(ephemeral));
@@ -412,12 +405,12 @@ int main(){
 				std::string report_string_value = std::get<std::string>(event.get_parameter("mensaje"));
 				std::string report_formatted = "<:raidreport:1129602288361672764> Nuevo error.\n\n" + report_string_value + "\n - __Reportado por__ **" + std::to_string(interaction.usr.id) + "** || <@" + std::to_string(interaction.usr.id) + ">\n- __En el servidor__ **" + std::to_string(interaction.get_guild().id) + "**";
 
-				bytebot.direct_message_create(bytebot_developers[0], report_formatted);
+				//.direct_message_create(bytebot_developers[0], report_formatted);
 				bytebot.execute_webhook_sync(bytebot_wh, report_formatted);
 				event.reply(message(interaction.channel_id, "<:clydecheck:1129147137146503278> Mensaje enviado.").set_flags(ephemeral));
 			} else if (interaction.get_command_name() == "dev") {
 				// Use std::find to search for the element
-				if (std::find(std::begin(bytebot_developers), std::end(bytebot_developers), std::to_string(interaction.usr.id))) {
+				if (std::find(std::begin(bytebot_developers), std::end(bytebot_developers), std::to_string(interaction.usr.id)) != std::end(bytebot_developers)) {
 					std::string input = std::get<std::string>(event.get_parameter("input")); //?
 
 					if(input == "print") {
